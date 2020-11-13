@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Industria 4.0</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+    <body>
+    <div id="navbar">
+        <ul class="navbar">
+            <li class="navbar-item">
+                <a class="navbar-link" id="dashboard" href="/">Dashboard</a>
+            </li>
+            <li id="user" class="navbar-item">
+                <a class="navbar-link" id="login" href="/login.html">Entrar</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="wrapper">
+        <h1>Autenticação Geral </h1>
+        <div id="form_div">
+            <p>Apelido: <input type="text" id="apelido"></p>
+            <p>Senha: <input type="text" id="senha"></p>
+            <button id="btn_login">Entrar</button>
+            <br>
+            <p id="erro_login"></p>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>

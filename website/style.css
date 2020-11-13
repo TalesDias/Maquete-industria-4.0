@@ -1,0 +1,109 @@
+body{
+    margin: 0;
+    background-color: #E1E2E1;
+    font-weight: bold;
+}
+
+ul{
+    list-style-type: none;
+}
+
+.navbar{
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #00BA96;
+}
+
+.navbar-item {
+    float: left;
+}
+
+.navbar-link  {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 20px;
+    text-decoration: none;
+    font: bold 30px Arial, sans-serif;
+}
+
+.navbar-link:hover:not(.active) {
+    background-color: #00876e;
+}
+
+h1 {
+    text-align: center;
+    margin: 15px;
+}
+
+#user {
+    float:right;
+}
+
+#wrapper {
+    margin: 8% 25%;
+    background-color: #F5F5F6;
+    padding: 30px;
+    border-radius: 5px;
+}
+
+#form_div{
+    text-align: center;
+    margin: 20px 0;
+}
+
+#btn_login{
+    background-color: #5C0015;
+    color: #FFF;
+    min-width: 120px;
+    min-height: 50px;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.btn {
+    min-width: 100px;
+    min-height: 40px;
+    border-radius: 5px;
+    font-size: larger;
+    font-weight: bold;
+}
+
+#btn_manutencao{
+    background-color: #FFF500;
+    color: #000;
+    display: none;
+}
+
+#btn_emergencia{
+    background-color: #DB0015;
+    color: #FFF;
+    display: none;
+}
+
+#btn_retomada{
+    background-color: #1bff00;
+    color: #FFF;
+    display: none;
+}
+
+#buttons{
+    display: none;
+    text-align: center;
+}
+
+#log_div{
+    display: none;
+    border: 1px solid black;
+    height: 500px;
+    border-radius: 5px;
+    line-height: 1.8;
+    padding: 10px;
+    overflow: scroll;
+    font-size: small;
+    color: #000;
+    background-color: #E1E2E1;;
+}

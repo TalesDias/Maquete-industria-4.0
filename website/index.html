@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Industria 4.0</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <div id="navbar">
+        <ul class="navbar">
+            <li class="navbar-item">
+                <a class="navbar-link" id="dashboard" href="/">Dashboard</a>
+            </li>
+            <li id = "user" class="navbar-item">
+                <a class="navbar-link" id="login" href="/login.html">Entrar</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="wrapper">
+        <h1>Estado: <span id="estado">-</span> </h1>
+
+        <div id="buttons">
+            <button id="btn_manutencao" class="btn">PARADA DE MANUTENÇÃO</button>
+            <button id="btn_emergencia" class="btn">PARADA DE EMERGÊNCIA</button>
+            <button id="btn_retomada" class="btn">RETOMAR ATIVIDADES</button>
+        </div>
+
+        <p>Produção do Dia: <span id="prod_dia">-</span></p>
+        <ul>
+            <li>Normais: <span id="normais">-</span> Peças</li>
+            <li>Retrabalhadas: <span id="retrabalhadas">-</span> Peças</li>
+            <li>Refugadas: <span id="refugadas">-</span> Peças</li>
+        </ul>
+        <p> Produção do Mês: <span id="prod_mes">-</span> Peças</p>
+        <p> Última manutenção: <span id="ultima_manutencao">-</span></p>
+        <p id="precisa_manutencao"></p>
+
+        <div id="log_div">
+            Carregando...
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>
