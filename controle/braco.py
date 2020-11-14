@@ -1,10 +1,18 @@
 import RPi.GPIO as GPIO
-import time
+import time, enum
 
 GPIO.setmode(GPIO.BOARD)
 
+class Movimentos(enum.Enum):
+    Mesa      = 1
+    Concluido = 2
+    Descarte  = 3
+    
+
+#Percorre um intervalo de jump partindo de X ate Y
 def arange(x, y, jump):
-    if(jump>0):
+    print(x,y,jump)
+    if(jump > 0):
         while x < y:
             yield x
             x += jump
@@ -18,63 +26,99 @@ class Servo:
         GPIO.setup(porta, GPIO.OUT)
         self.pwm = GPIO.PWM(porta, 50) # pulsos de 50Hz 
         self.pwm.start(0)
-        self.posF = 6.0
+        self.posF = 6.0 # Guarda a posicao anterior
 
     def __exit__(self):
         self.pwm.stop()
         GPIO.cleanup()
-
-garraS = Servo(29) #verificado
-
-extS = Servo(31) #verificado
-extS.posF = 1.0
-
-alturaS = Servo(33) #verificado
-alturaS.posF = 6.0
-
-baseS = Servo(35)
-baseS.posF = 6.0
+    
+    def __call__(self, ang):
+        freq = ang/18 + 2
+        
+        self.posF = freq
+        self.pwm.ChangeDutyCycle(freq)
+        
+    def stop(self):
+        self.pwm.ChangeDutyCycle(0)
 
 
-def abrirGarra():
-    garraS.pwm.ChangeDutyCycle(8)   
+#Declarando os servos motores
+garra = Servo(29)
+
+ext = Servo(31)
+ext.posF = 1.0
+
+altura = Servo(33)
+altura.posF = 6.0
+
+base = Servo(35)
+base.posF = 6.0
+
+
+def reset():
+    garra(200)
+    ext(20)
+    altura(10)
+    base(110)
+    
     time.sleep(0.5)
-    garraS.pwm.ChangeDutyCycle(0)
-
-def fecharGarra():
-    garraS.pwm.ChangeDutyCycle(12)  
-    time.sleep(0.5)
-    garraS.pwm.ChangeDutyCycle(0)
-
-def ext(ang):
-    angF = ang/18 + 2
-    delta = angF - extS.posF
-    if (delta == 0):
-        return
-
-    dir = (int) (delta / abs(delta)) 
-
-    for k in arange(extS.posF, angF, dir/10000): 
-        print("E: "+ str(k))
-        extS.pwm.ChangeDutyCycle(k)
-        time.sleep(5e-5)
-
-    extS.posF = angF
-    extS.pwm.ChangeDutyCycle(0)
-
-def base(ang):
-    angF = ang/18 + 2
-    delta = angF - baseS.posF
-    if (delta == 0):
-        return
-
-    dir = (int) (delta / abs(delta)) 
-
-    for k in arange(baseS.posF, angF, dir/10000): 
-        print("B: "+str(k))
-        baseS.pwm.ChangeDutyCycle(k)
-        time.sleep(5e-5)
+    
+    garra.stop()
+    ext.stop()
+    altura.stop()
+    base.stop()
 
 
-    baseS.posF = angF
-    baseS.pwm.ChangeDutyCycle(0)
+def executar(mov):
+    if(mov == Movimentos.Mesa):
+        
+        garra(120)
+        base(174)
+        time.sleep(0.5)
+        base.stop()
+        garra.stop()
+        altura(-11)
+        ext(60)
+        time.sleep(0.4)
+        ext(80)
+        time.sleep(0.2)
+        altura.stop()
+        ext.stop()
+        garra(200)
+        time.sleep(1)
+        ext(10)
+        altura(10)
+        time.sleep(0.8)
+        ext.stop()
+        altura.stop()
+        base(110)
+        time.sleep(0.6)
+        base.stop()
+        
+        altura(0)
+        ext(70)
+        time.sleep(0.8)
+        altura.stop()
+        ext.stop()
+        garra(120)
+        time.sleep(0.4)
+        ext(20)
+        time.sleep(0.1)
+        ext.stop()
+        
+        
+        
+        
+    elif(mov == Movimentos.Concluido):
+        pass
+    
+    elif(mov == Movimentos.Descarte):
+        pass
+    
+    else:
+        raise TypeError("Use apenas movimentos validos")
+    reset()
+
+reset()
+for i in range(5):
+    executar(Movimentos.Mesa)
