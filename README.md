@@ -30,8 +30,9 @@ simulação de atuadores por meio de LED's, mesa giratória para simulação do 
 
 ## Descrição operacional
 O braço robótico pegará o bloco a ser usinado na entrada da célula e o colocará sobre a mesa giratória, que levará a peça para a primeira estação de usinagem (representada com LEDs indicadores), após o término da operação de usinagem o bloco será levado para uma estação de aferimento (representada com um senhor de cor que irá averiguar a situação da peça). São 3 blocos com cores diferentes, por exemplo, a verde representa a peça pronta e dentro das especificações, a amarela representa a peça que requer um retrabalho e a vermelha representa a peça que não é possível o retrabalho e terá que ser refugada.  
-<img src="img/esquematico-maquete.png" width="1000px">
-O sensor ótico identifica a cor da face e o sistema toma uma decisão:  
+<img src="img/esquematico-maquete.png" width="400px">
+
+<p>O sensor ótico identifica a cor da face e o sistema toma uma decisão:</p>
 
 1- Retorna a peça para estação de usinagem para um novo passo;  
 
