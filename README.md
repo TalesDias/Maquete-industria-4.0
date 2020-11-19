@@ -12,7 +12,7 @@ simulação de atuadores por meio de LED's, mesa giratória para simulação do 
 </ul>
 
 ## Diagrama elétrico
-<img src="img/diagrama.jpg" width="300px">
+<img src="img/diagrama.jpeg" width="300px">
 
 ## Descrição operacional
 yadda yadda
