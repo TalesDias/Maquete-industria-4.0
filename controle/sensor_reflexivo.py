@@ -1,7 +1,7 @@
-import RPi.GPIO as IO
+import RPi.GPIO as GPIO
 
-IO.setmode(IO.BOARD)
-IO.setup(37, IO.IN)
+IO.setmode(GPIO.BOARD)
+IO.setup(37, GPIO.IN)
 
 def presente():
-    return IO.input(37)
+    return GPIO.input(37)
