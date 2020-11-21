@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
-import time, enum
+import enum
+from time import sleep
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -55,13 +56,14 @@ base = Servo(35)
 base.posF = 6.0
 
 
-def reset():
+def setup():
+    sleep(0.5)
     garra(200)
-    ext(20)
-    altura(10)
+    ext(30)
+    altura(110)
     base(110)
     
-    time.sleep(0.5)
+    sleep(0.5)
     
     garra.stop()
     ext.stop()
@@ -71,42 +73,48 @@ def reset():
 
 def executar(mov):
     if(mov == Movimentos.Mesa):
-        
+        '''
         garra(120)
         base(174)
-        time.sleep(0.5)
+        sleep(0.5)
         base.stop()
         garra.stop()
-        altura(-11)
-        ext(60)
-        time.sleep(0.4)
-        ext(80)
-        time.sleep(0.2)
+        sleep(0.2)        
+        altura(66)
+        ext(50)
+        sleep(0.4)
+        ext(70)
+        sleep(0.4)
         altura.stop()
+        sleep(0.8)
+        ext(85)
+        sleep(0.3)
         ext.stop()
-        garra(200)
-        time.sleep(1)
-        ext(10)
-        altura(10)
-        time.sleep(0.8)
+        sleep(0.6)
+        garra(200) # pega a peca
+        sleep(1.5)
+        ext(40)
+        altura(90)
+        sleep(0.8)
         ext.stop()
         altura.stop()
         base(110)
-        time.sleep(0.6)
+        sleep(0.6)
         base.stop()
-        
-        altura(0)
+        '''
+        altura(60)
         ext(70)
-        time.sleep(0.8)
+        sleep(0.4)
         altura.stop()
         ext.stop()
-        garra(120)
-        time.sleep(0.4)
-        ext(20)
-        time.sleep(0.1)
+        sleep(0.5)
+        garra(120)# solta a peca
+        sleep(1)
+        ext(60)
+        altura(100)
+        sleep(0.3)
+        altura.stop()
         ext.stop()
-        
-        
         
         
     elif(mov == Movimentos.Concluido):
@@ -117,8 +125,7 @@ def executar(mov):
     
     else:
         raise TypeError("Use apenas movimentos validos")
-    reset()
+    setup()
 
-reset()
-for i in range(5):
+for i in range (1):
     executar(Movimentos.Mesa)
