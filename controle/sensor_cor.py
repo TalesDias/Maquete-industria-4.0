@@ -17,21 +17,21 @@ class Cor(enum.Enum):
 NUM_CYCLES = 50
 
 
-sensorA = {"s2": 19, "s3": 21, "sinal": 23, 'led': 40 }
-sensorB = {"s2": 24, "s3": 22, "sinal": 26, 'led': 36}
+sensor_A = {"s2": 19, "s3": 21, "sinal": 23, 'led': 40 }
+sensor_B = {"s2": 24, "s3": 22, "sinal": 26, 'led': 36}
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False) 
-GPIO.setup(sensorA["sinal"], GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(sensorA["s2"], GPIO.OUT)
-GPIO.setup(sensorA["s3"], GPIO.OUT)
-GPIO.setup(sensorA["led"], GPIO.OUT)
-GPIO.output(sensorA["led"], False)
-GPIO.setup(sensorB["sinal"], GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(sensorB["s2"], GPIO.OUT)
-GPIO.setup(sensorB["s3"], GPIO.OUT)
-GPIO.setup(sensorB["led"], GPIO.OUT)
-GPIO.output(sensorB["led"], False)
+GPIO.setup(sensor_A["sinal"], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(sensor_A["s2"], GPIO.OUT)
+GPIO.setup(sensor_A["s3"], GPIO.OUT)
+GPIO.setup(sensor_A["led"], GPIO.OUT)
+GPIO.output(sensor_A["led"], False)
+GPIO.setup(sensor_B["sinal"], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(sensor_B["s2"], GPIO.OUT)
+GPIO.setup(sensor_B["s3"], GPIO.OUT)
+GPIO.setup(sensor_B["led"], GPIO.OUT)
+GPIO.output(sensor_B["led"], False)
 
 
 
@@ -85,4 +85,4 @@ def cor(sensor):
     else:
         return None
   
-for i in range (20): cor(sensorA)
+# for i in range (20): cor(sensor_A)

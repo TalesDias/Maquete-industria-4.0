@@ -15,15 +15,15 @@ GPIO.output(13, False)
 GPIO.setup(11, GPIO.OUT) #MS3
 GPIO.output(11, True)
 
-VELOCIDADE = 0.018
-pos_atual = None
-
 class Posicoes(enum.Enum):
     Inicial  = 0
     Led_A    = 58
     Sensor_A = 150
     Led_B    = 260
     Sensor_B = 345
+
+VELOCIDADE = 0.018
+pos_atual = Posicoes.Inicial
 
 def sign(num): return 1 if num >= 0 else -1
 
@@ -53,11 +53,6 @@ def girar_para(pos):
     else:
         girar(abs(delta), -1)
     pos_atual = pos
-    
-
-def setup():
-    global pos_atual
-    pos_atual = Posicoes.Inicial
     
     
     
