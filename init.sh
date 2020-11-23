@@ -10,11 +10,10 @@ echo "Iniciando a Maquete"
 date
 
 cd ./website
-/usr/bin/python3 serve.py &
+sudo /usr/bin/python3 serve.py &
 
-cd ..
-cd ./servidor
+cd ../servidor
 source bin/activate
-usr/bin/python3 app.py
+./bin/uwsgi --http :5000 --wsgi-file app.py --callable app
 
 deactivate

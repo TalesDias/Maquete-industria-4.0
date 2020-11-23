@@ -1,4 +1,6 @@
 let req  = new XMLHttpRequest()
+let base_addr = "http://192.168.0.109:80"
+let server_addr = "http://192.168.0.109:5000"
 
 $(document).ready(function (){
 
@@ -11,7 +13,7 @@ $(document).ready(function (){
             "senha": senha
         })
 
-        req.open('POST', 'http://127.0.0.1:5000/login')
+        req.open('POST', server_addr+'/login')
         req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         req.onload = function () {
             const status = req.status
@@ -21,7 +23,7 @@ $(document).ready(function (){
                     sessionStorage.apelido = apelido
                     sessionStorage.cargo = JSON.parse(req.responseText).cargo
                     setTimeout(function () {
-                        $(window).attr("location", "http://localhost:8000")
+                        $(window).attr("location", base_addr)
                     }, 1000);
                     return;
 

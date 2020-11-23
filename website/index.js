@@ -1,4 +1,6 @@
 let req  = new XMLHttpRequest()
+let base_addr = "http://192.168.0.109:80"
+let server_addr = "http://192.168.0.109:5000"
 
 $(document).ready(function (){
 
@@ -46,10 +48,10 @@ function parada(tipo){
         "tipo": tipo
     })
 
-    req.open('POST', 'http://127.0.0.1:5000/parada')
+    req.open('POST', server_addr+'/parada')
     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     req.onload = function () {
-        $(window).attr("location", "http://localhost:8000")
+        $(window).attr("location", base_addr)
     }
     req.send(params)
 }
@@ -60,18 +62,18 @@ function logout(){
         "apelido": apelido
     })
 
-    req.open('POST', 'http://127.0.0.1:5000/logout')
+    req.open('POST', server_addr+'/logout')
     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     req.onload = function () {
         sessionStorage.removeItem('apelido')
-        $(window).attr("location", "http://localhost:8000")
+        $(window).attr("location", base_addr)
     }
     req.send(params)
 }
 
 function preencherDados(){
 
-    req.open('GET', 'http://127.0.0.1:5000/')
+    req.open('GET', server_addr)
     req.onload = function () {
         let data = JSON.parse(req.responseText)
 
@@ -129,7 +131,7 @@ function preencherLog(){
     //
     console.log("fix")
 
-    req.open('POST', 'http://127.0.0.1:5000/log')
+    req.open('POST', server_addr+'/log')
     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     req.onload = function () {
         let log = $("#log_div")
