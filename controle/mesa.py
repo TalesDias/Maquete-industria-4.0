@@ -3,8 +3,10 @@ from time import sleep
 import enum
 
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(18, GPIO.OUT) # STEP
-GPIO.setup(16, GPIO.OUT) #DIR
+STEP = 16
+DIR = 18
+GPIO.setup(STEP, GPIO.OUT)
+GPIO.setup(DIR, GPIO.OUT)
 ''' Nao funciona por algum motivo,
 provavel problema de hardware
 GPIO.setup(15, GPIO.OUT) #MS1
@@ -30,15 +32,15 @@ def sign(num): return 1 if num >= 0 else -1
 
 def girar(passos, direcao):
     if (direcao < 0):
-        GPIO.output(16, False)
+        GPIO.output(DIR, False)
     else:
-        GPIO.output(16, True)
+        GPIO.output(DIR, True)
     
         
     for i in range(passos):
-        GPIO.output(18, True)
+        GPIO.output(STEP, True)
         sleep(VELOCIDADE)
-        GPIO.output(18, False)
+        GPIO.output(STEP, False)
         sleep(VELOCIDADE)
 
 def girar_para(pos):
@@ -54,6 +56,9 @@ def girar_para(pos):
         girar(abs(delta), -1)
     pos_atual = pos
     
-    
+girar_para(Posicoes.Led_A)
+sleep(1)
+girar_para(Posicoes.Inicial)
+sleep(1)
     
     

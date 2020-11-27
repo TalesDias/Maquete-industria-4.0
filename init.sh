@@ -2,14 +2,16 @@
 
 echo "iniciando vnc"
 
-/usr/bin/vncserver :1 -geometry 1350x700
+/usr/bin/vncserver -geometry 1350x700
 
+echo "Iniciando o pigpio daemon"
+pigpiod
 
 cd "Desktop/Maquete-industria-4.0"
 echo "Iniciando a Maquete"
 date
 
-cd ./website
+cd /home/pi/Desktop/Maquete-industria-4.0/website
 sudo /usr/bin/python3 serve.py &
 
 cd ../servidor
