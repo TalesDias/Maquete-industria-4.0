@@ -14,11 +14,11 @@ class Cor(enum.Enum):
     
 
 
-NUM_CYCLES = 50
+NUM_CYCLES = 100
 
 
-sensor_A = {"s2": 19, "s3": 21, "sinal": 23, 'led': 40 }
-sensor_B = {"s2": 24, "s3": 22, "sinal": 26, 'led': 36}
+sensor_A = {"s2": 21, "s3": 19, "sinal": 23, 'led': 36}
+sensor_B = {"s2": 26, "s3": 22, "sinal": 24, 'led': 32}
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False) 
@@ -36,8 +36,6 @@ GPIO.output(sensor_B["led"], False)
 
 
 def valor(sensor, filtro = Filtro.Sem_Filtro):
-    
-    GPIO.output(sensor["led"], True)
     
     if(filtro == Filtro.Vermelho):
         GPIO.output(sensor["s2"], GPIO.LOW)
@@ -59,30 +57,34 @@ def valor(sensor, filtro = Filtro.Sem_Filtro):
     for impulse_count in range(NUM_CYCLES):
         GPIO.wait_for_edge(sensor["sinal"], GPIO.FALLING)
     
-    GPIO.output(sensor["led"], False)
     duration = time.time() - start      #seconds to run for loop
+    
     return(NUM_CYCLES / duration)   #in Hz
 
 
 def cor(sensor):
+    GPIO.output(sensor["led"], True)
+    
     RESOLUCAO = 100
     vm = int(sum([valor(sensor, Filtro.Vermelho) for i in range(RESOLUCAO)])/RESOLUCAO)
     vd = int(sum([valor(sensor, Filtro.Verde) for i in range(RESOLUCAO)])/RESOLUCAO)
     az = int(sum([valor(sensor, Filtro.Azul) for i in range(RESOLUCAO)])/RESOLUCAO)
     sf = int(sum([valor(sensor, Filtro.Sem_Filtro) for i in range(RESOLUCAO)])/RESOLUCAO)
     print(vm, vd, az, sf)
+    GPIO.output(sensor["led"], False)
+
     
-    
-    if(vm > 3500 and sf > 6000):
+    if(vm > 15000 and az > 10000 and sf > 20000):
         return Cor.Amarelo
         
-    elif(vm > 2000 and vd < 1400):
+    elif(vm > 10000 and sf > 20000):
         return Cor.Vermelho
     
-    elif(vm < 900 and az < 1200 and vd < 1000):
+    elif(az > 5000 and sf > 15000):
         return Cor.Verde
     
     else:
         return None
-  
-# for i in range (20): cor(sensor_A)
+
+for i in range (20):
+    print(cor(sensor_A))
