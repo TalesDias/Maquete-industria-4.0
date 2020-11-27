@@ -2,7 +2,7 @@
 
 echo "iniciando vnc"
 
-/usr/bin/vncserver -geometry 1350x700
+/usr/bin/vncserver :1 -geometry 1350x700
 
 echo "Iniciando o pigpio daemon"
 pigpiod

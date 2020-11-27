@@ -69,3 +69,67 @@
 2020-11-21 17:37:55.451395 @ System -> iniciando 11 rotina do dia
 2020-11-21 17:39:40.795270 @ System -> Entrou em modo:ATIVO
 2020-11-21 17:39:40.795786 @ System -> iniciando 11 rotina do dia
+2020-11-27 05:04:23.601803 @ System -> Entrou em modo:ATIVO
+2020-11-27 05:04:23.606067 @ System -> iniciando 11 rotina do dia
+2020-11-27 05:05:42.389881 @ System -> Entrou em modo:ATIVO
+2020-11-27 05:05:42.390696 @ System -> iniciando 11 rotina do dia
+2020-11-27 05:06:49.200757 @ System -> Entrou em modo:ATIVO
+2020-11-27 05:06:49.201650 @ System -> iniciando 11 rotina do dia
+2020-11-27 05:07:36.129281 @ System -> Entrou em modo:ATIVO
+2020-11-27 05:07:36.130015 @ System -> iniciando 11 rotina do dia
+2020-11-27 05:08:26.641129 @ System -> finalizando 11 rotina do dia, 8 pecas concluidas
+2020-11-27 05:08:26.642265 @ System -> Entrou em modo:ATIVO
+2020-11-27 05:08:26.646913 @ System -> iniciando 12 rotina do dia
+2020-11-27 05:32:32.689322 @ System -> Entrou em modo:ATIVO
+2020-11-27 05:32:32.690128 @ System -> iniciando 11 rotina do dia
+2020-11-27 05:33:38.841073 @ System -> finalizando 11 rotina do dia, 8 pecas concluidas
+2020-11-27 05:33:38.842073 @ System -> Entrou em modo:ATIVO
+2020-11-27 05:33:38.842308 @ System -> iniciando 12 rotina do dia
+2020-11-27 07:45:10.027793 @ System -> Entrou em modo:ATIVO
+2020-11-27 07:45:10.032246 @ System -> iniciando 11 rotina do dia
+2020-11-27 07:46:06.389849 @ System -> finalizando 11 rotina do dia, 8 pecas concluidas
+2020-11-27 07:46:52.436353 @ System -> Entrou em modo:ATIVO
+2020-11-27 07:46:52.436923 @ System -> iniciando 12 rotina do dia
+2020-11-27 07:47:38.548213 @ System -> falha na peca 12
+2020-11-27 07:47:38.548877 @ System -> finalizando 12 rotina do dia, 4 pecas refugadas
+2020-11-27 07:47:43.554854 @ System -> Entrou em modo:ATIVO
+2020-11-27 07:47:43.559589 @ System -> iniciando 13 rotina do dia
+2020-11-27 07:48:29.775182 @ System -> falha na peca 13
+2020-11-27 07:48:29.775879 @ System -> finalizando 13 rotina do dia, 5 pecas refugadas
+2020-11-27 07:48:32.779750 @ System -> Entrou em modo:ATIVO
+2020-11-27 07:48:32.780419 @ System -> iniciando 14 rotina do dia
+2020-11-27 07:50:02.732714 @ System -> finalizando 14 rotina do dia, 11 pecas concluidas
+2020-11-27 07:50:13.743634 @ System -> Entrou em modo:ATIVO
+2020-11-27 07:50:13.744339 @ System -> iniciando 15 rotina do dia
+2020-11-27 07:51:20.720328 @ System -> finalizando 15 rotina do dia, 12 pecas concluidas
+2020-11-27 07:52:35.784962 @ System -> Entrou em modo:ATIVO
+2020-11-27 07:52:35.785670 @ System -> iniciando 16 rotina do dia
+2020-11-27 07:53:34.067405 @ System -> finalizando 16 rotina do dia, 13 pecas concluidas
+2020-11-27 07:54:37.114458 @ System -> Entrou em modo:ATIVO
+2020-11-27 07:54:37.115229 @ System -> iniciando 17 rotina do dia
+2020-11-27 07:55:23.338312 @ System -> falha na peca 17
+2020-11-27 07:55:23.339019 @ System -> finalizando 17 rotina do dia, 6 pecas refugadas
+2020-11-27 07:55:42.355951 @ System -> Entrou em modo:ATIVO
+2020-11-27 07:55:42.356637 @ System -> iniciando 18 rotina do dia
+2020-11-27 07:59:09.944926 @ System -> finalizando 18 rotina do dia, 15 pecas concluidas
+2020-11-27 08:04:38.291569 @ System -> Entrou em modo:ATIVO
+2020-11-27 08:04:38.292299 @ System -> iniciando 19 rotina do dia
+2020-11-27 08:05:36.273419 @ System -> finalizando 19 rotina do dia, 16 pecas concluidas
+2020-11-27 09:04:48.444729 @ System -> Entrou em modo:ATIVO
+2020-11-27 09:04:48.445485 @ System -> iniciando 20 rotina do dia
+2020-11-27 09:07:57.894705 @ System -> finalizando 20 rotina do dia, 17 pecas concluidas
+2020-11-27 10:30:21.208463 @ maria-> Realizou login
+2020-11-27 10:37:44.162934 @ maria-> Requisitou parada de retomada
+2020-11-27 11:01:38.078501 @ maria-> Realizou login
+2020-11-27 11:02:32.991021 @ maria-> Requisitou parada de retomada
+2020-11-27 11:02:48.810472 @ maria-> Realizou logout
+2020-11-27 12:23:49.802436 @ System -> Entrou em modo:ATIVO
+2020-11-27 12:23:49.803321 @ System -> iniciando 11 rotina do dia
+2020-11-27 12:24:48.271269 @ System -> finalizando 11 rotina do dia, 8 pecas concluidas
+2020-11-27 12:31:09.430604 @ System -> Entrou em modo:ATIVO
+2020-11-27 12:31:09.431931 @ System -> iniciando 11 rotina do dia
+2020-11-27 12:32:11.981465 @ System -> finalizando 11 rotina do dia, 8 pecas concluidas
+2020-11-27 12:41:54.494817 @ System -> Entrou em modo:ATIVO
+2020-11-27 12:41:54.495705 @ System -> iniciando 11 rotina do dia
+2020-11-27 12:42:43.745246 @ System -> falha na peca 11
+2020-11-27 12:42:43.746048 @ System -> finalizando 11 rotina do dia, 4 pecas refugadas

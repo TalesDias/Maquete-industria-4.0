@@ -22,7 +22,7 @@ class Posicoes(enum.Enum):
     Led_A    = 58
     Sensor_A = 150
     Led_B    = 260
-    Sensor_B = 345
+    Sensor_B = 355
 
 VELOCIDADE = 0.018
 pos_atual = Posicoes.Inicial
@@ -55,10 +55,5 @@ def girar_para(pos):
     else:
         girar(abs(delta), -1)
     pos_atual = pos
-    
-girar_para(Posicoes.Led_A)
-sleep(1)
-girar_para(Posicoes.Inicial)
-sleep(1)
     
     

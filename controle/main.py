@@ -1,7 +1,7 @@
 from time import sleep
 from datetime import datetime
 from dateutil.parser import parse as parse_date
-import enum,sqlite3
+import enum,sqlite3, threading
 
 import braco, led_rgb, mesa
 import sensor_cor as sc, sensor_reflexivo as sf
@@ -72,7 +72,10 @@ def executar():
     cor = None
     while(cor != sc.Cor.Verde):
         mesa.girar_para(mesa.Posicoes.Led_A)
-        led_rgb.gradiente(led_rgb.AMARELO, led_rgb.VERMELHO, led_rgb. LEDA)
+        #led_rgb.gradiente(led_rgb.AMARELO, led_rgb.VERMELHO, led_rgb. LEDA)
+        led_rgb.alternar(led_rgb.LED_A)
+        sleep(4)
+        led_rgb.alternar(led_rgb.LED_A)
         mesa.girar_para(mesa.Posicoes.Sensor_A)
         cor = sc.cor(sc.sensor_A) 
         
@@ -87,7 +90,11 @@ def executar():
     cor = None
     while(cor != sc.Cor.Verde):
         mesa.girar_para(mesa.Posicoes.Led_B)
-        led_rgb.gradiente(led_rgb.AMARELO, led_rgb.VERMELHO, led_rgb.LEDB)
+        #led_rgb.gradiente(led_rgb.AMARELO, led_rgb.VERMELHO, led_rgb.LEDB)
+        led_rgb.alternar(led_rgb.LED_B)
+        sleep(4)
+        led_rgb.alternar(led_rgb.LED_B)
+
         mesa.girar_para(mesa.Posicoes.Sensor_B)
         cor = sc.cor(sc.sensor_B) 
         
@@ -157,6 +164,15 @@ def loop():
         
         pc_tot += 1 
     
-    
-setup()
-loop()
+def run():
+
+	setup()
+
+	t = threading.Thread(target=loop(), daemon=True)
+	t.start()
+
+	return
+
+
+
+

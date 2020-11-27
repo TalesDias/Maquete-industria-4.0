@@ -3,7 +3,7 @@ import enum
 from time import sleep
 
 pwm = pigpio.pi()
-abc = 0.5
+abc = 0.7
 
 class Movimentos(enum.Enum):
     Mesa      = 1
@@ -13,7 +13,6 @@ class Movimentos(enum.Enum):
 
 #Percorre um intervalo de jump partindo de X ate Y
 def arange(x, y, jump):
-    print(x,y,jump)
     if(jump > 0):
         while x < y:
             yield x
@@ -41,7 +40,16 @@ class Servo:
         
     def parar(self):
         pwm.set_servo_pulsewidth(self.porta, 0)
-
+    
+    def deslizar(self, origem, destino):
+        d_origem = origem*11 + 500
+        d_destino = destino*11 + 500
+        
+        for i in arange(d_origem, d_destino, 0.1):
+            pwm.set_servo_pulsewidth(self.porta, i)
+            sleep(0.0001)
+            pwm.set_servo_pulsewidth(self.porta, 0)
+            sleep(0.0001)
 
 #Declarando os servos motores
 garra = Servo(5)
@@ -68,6 +76,7 @@ def setup():
     altura.parar()
     
 def executar(mov):
+    sleep(2)
     if(mov == Movimentos.Mesa):
         base(174)
         sleep(abc)
@@ -78,7 +87,7 @@ def executar(mov):
         altura(65)
         sleep(abc)
         altura.parar()
-        ext(80)
+        ext.deslizar(70,80)
         sleep(abc)
         garra(180)
         sleep(abc*2)
@@ -105,14 +114,14 @@ def executar(mov):
         sleep(abc)
         altura(50)
         sleep(abc)
-        ext(80)
+        ext.deslizar(60, 80)
         sleep(abc)
         garra(180) # Pega a Peca
         sleep(abc)
         ext(20)
         sleep(abc)
         altura(110)
-        sleep(abc)
+        sleep(abc*3)
         altura.parar()
         ext(40)
         sleep(abc)
@@ -129,14 +138,14 @@ def executar(mov):
         sleep(abc)
         altura(50)
         sleep(abc)
-        ext(80)
+        ext.deslizar(60, 80)
         sleep(abc)
         garra(180) # Pega a Peca
         sleep(abc)
         ext(20)
         sleep(abc)
         altura(110)
-        sleep(abc)
+        sleep(abc*3)
         altura.parar()
         ext(40)
         sleep(abc)
@@ -150,6 +159,4 @@ def executar(mov):
         raise TypeError("Use apenas movimentos validos")
     setup()
 
-
-for i in range (1):
-    executar(Movimentos.Descarte)
+setup()

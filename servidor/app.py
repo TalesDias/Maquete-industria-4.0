@@ -1,6 +1,12 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import sys
+sys.path.append('../controle/')
+import main as Maquete
+
+Maquete.run()
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -8,7 +14,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../maquete.db'
 
 db = SQLAlchemy(app)
 
-session = {}
 
 
 class Peca(db.Model):
@@ -50,6 +55,7 @@ def dashboard():
     f.close()
 
     return {
+	'estado':Maquete.estado,
         'pecas': pecas,
         'producao_mes': pecas_mes,
         'ultima_manutencao': ultima_man
@@ -79,8 +85,6 @@ def entrar():
     if user is None:
         return {}, 404
 
-    session[apelido] = user.cargo
-
     linha = str(datetime.now())
     linha += " @ "
     linha += user.apelido
@@ -104,16 +108,12 @@ def sair():
     if apelido is None:
         return {}, 400
 
-    if session.get(apelido) is None:
-        return {}, 404
-
     linha = str(datetime.now())
     linha += " @ "
     linha += apelido
     linha += "-> Realizou logout\n"
     log_to_file(linha)
 
-    session.pop(apelido, None)
     return {'msg': 'sucesso'}, 200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
 
@@ -131,11 +131,7 @@ def log():
     apelido = request.json.get('apelido')
     if apelido is None:
         return {}, 401
-
-    if session.get(apelido) is None:
-        return {}, 401
-
-    if session.get(apelido) == 'administrador':
+    if apelido == 'administrador':
         with open('../log', 'r') as f:
             contents = f.readlines()
             f.close()
@@ -163,26 +159,18 @@ def parada():
     if apelido is None or tipo is None:
         return {}, 401
 
-    if session.get(apelido) is None:
-        return {}, 401
 
-    # requisitar para o sistema
 
     if tipo == "manutencao":
+        Maquete.estado = Maquete.Estados.Manutencao
         linha = str(datetime.now())
         linha += " @ "
         linha += apelido
         linha += "-> Requisitou parada de manutencao\n"
         log_to_file(linha)
 
-    elif tipo == "emergencia":
-        linha = str(datetime.now())
-        linha += " @ "
-        linha += apelido
-        linha += "-> Requisitou parada de emergencia\n"
-        log_to_file(linha)
-
     elif tipo == "retomada":
+        Maquete.estado = Maquete.Estados.Inativo
         linha = str(datetime.now())
         linha += " @ "
         linha += apelido

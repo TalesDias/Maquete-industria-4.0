@@ -1,6 +1,6 @@
 let req  = new XMLHttpRequest()
-let base_addr = "http://192.168.0.109:80"
-let server_addr = "http://192.168.0.109:5000"
+let base_addr = "http://192.168.1.9:80"
+let server_addr = "http://192.168.1.9:5000"
 
 $(document).ready(function (){
 
@@ -18,9 +18,6 @@ $(document).ready(function (){
         parada("manutencao")
     })
 
-    $("#btn_emergencia").click(function (){
-        parada("emergencia")
-    })
 
     $("#btn_retomada").click(function (){
         parada("retomada")
@@ -77,7 +74,7 @@ function preencherDados(){
     req.onload = function () {
         let data = JSON.parse(req.responseText)
 
-        let estado = "Ativo" //data.estado
+        let estado = data.estado
 
         let concluidas = 0
         let retrabalhadas = 0
@@ -101,14 +98,10 @@ function preencherDados(){
         switch (estado) {
             case "Ativo":
                 $("#btn_manutencao").css('display', 'none')
-                $("#btn_emergencia").css('display', 'none')
                 $("#btn_retomada").css('display', 'block')
                 break;
-            case "Emergência":
             case "Manutenção":
-
                 $("#btn_manutencao").css('display', 'block')
-                $("#btn_emergencia").css('display', 'block')
                 $("#btn_retomada").css('display', 'none')
                 break;
         }

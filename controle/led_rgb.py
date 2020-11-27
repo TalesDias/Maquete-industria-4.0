@@ -1,3 +1,24 @@
+import RPi.GPIO as GPIO
+
+GPIO.setmode(GPIO.BOARD)
+
+LED_A = {'porta': 5, 'ativado': False}
+LED_B = {'porta': 3, 'ativado': False}
+
+
+GPIO.setup(LED_A['porta'], GPIO.OUT)
+GPIO.output(LED_A['porta'], False)
+GPIO.setup(LED_B['porta'], GPIO.OUT)
+GPIO.output(LED_B['porta'], False)
+
+def alternar(led):
+    led['ativado'] = not led['ativado']
+    GPIO.output(led['porta'], led['ativado'])
+
+
+
+
+'''
 import smbus,time
 
 bus = smbus.SMBus(1)
@@ -41,4 +62,4 @@ def gradiente(cor_de, cor_para, endereco, duracao = 500):
         final   += step
         
     bus.write_byte_data(DEVICE, endereco, PRETO)
-
+'''
