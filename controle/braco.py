@@ -1,8 +1,9 @@
-import RPi.GPIO as GPIO
+import pigpio
 import enum
 from time import sleep
 
-GPIO.setmode(GPIO.BOARD)
+pwm = pigpio.pi()
+abc = 0.5
 
 class Movimentos(enum.Enum):
     Mesa      = 1
@@ -24,108 +25,131 @@ def arange(x, y, jump):
 
 class Servo:
     def __init__(self, porta):
-        GPIO.setup(porta, GPIO.OUT)
-        self.pwm = GPIO.PWM(porta, 50) # pulsos de 50Hz 
-        self.pwm.start(0)
-        self.posF = 6.0 # Guarda a posicao anterior
+        self.porta = porta
+        
+        pwm.set_mode(self.porta, pigpio.OUTPUT)
+        pwm.set_PWM_frequency(self.porta, 50)
+        pwm.set_servo_pulsewidth(self.porta, 0)
 
     def __exit__(self):
-        self.pwm.stop()
-        GPIO.cleanup()
+        pwm.set_dutcycle(self.porta, 0)
+        pwm.set_PWM_frequency(self.porta, 0)
     
     def __call__(self, ang):
-        freq = ang/18 + 2
+        duty = ang*11 + 500
+        pwm.set_servo_pulsewidth(self.porta, duty)
         
-        self.posF = freq
-        self.pwm.ChangeDutyCycle(freq)
-        
-    def stop(self):
-        self.pwm.ChangeDutyCycle(0)
+    def parar(self):
+        pwm.set_servo_pulsewidth(self.porta, 0)
 
 
 #Declarando os servos motores
-garra = Servo(29)
-
-ext = Servo(31)
-ext.posF = 1.0
-
-altura = Servo(33)
-altura.posF = 6.0
-
-base = Servo(35)
-base.posF = 6.0
+garra = Servo(5)
+ext = Servo(6)
+altura = Servo(13)
+base = Servo(19)
 
 
 def setup():
+    garra(180)
     sleep(0.5)
-    garra(200)
-    ext(30)
-    altura(110)
+    garra.parar()
+    
     base(110)
-    
     sleep(0.5)
+    base.parar()
     
-    garra.stop()
-    ext.stop()
-    altura.stop()
-    base.stop()
-
-
+    ext(40)
+    sleep(0.5)
+    ext.parar()
+    
+    altura(80)
+    sleep(0.5)
+    altura.parar()
+    
 def executar(mov):
     if(mov == Movimentos.Mesa):
-        '''
-        garra(120)
         base(174)
-        sleep(0.5)
-        base.stop()
-        garra.stop()
-        sleep(0.2)        
-        altura(66)
-        ext(50)
-        sleep(0.4)
+        sleep(abc)
+        garra(130)
+        sleep(abc)
         ext(70)
-        sleep(0.4)
-        altura.stop()
-        sleep(0.8)
-        ext(85)
-        sleep(0.3)
-        ext.stop()
-        sleep(0.6)
-        garra(200) # pega a peca
-        sleep(1.5)
+        sleep(abc)
+        altura(65)
+        sleep(abc)
+        altura.parar()
+        ext(80)
+        sleep(abc)
+        garra(180)
+        sleep(abc*2)
         ext(40)
-        altura(90)
-        sleep(0.8)
-        ext.stop()
-        altura.stop()
+        sleep(abc)
         base(110)
-        sleep(0.6)
-        base.stop()
-        '''
-        altura(60)
+        sleep(abc)
         ext(70)
-        sleep(0.4)
-        altura.stop()
-        ext.stop()
-        sleep(0.5)
-        garra(120)# solta a peca
-        sleep(1)
-        ext(60)
-        altura(100)
-        sleep(0.3)
-        altura.stop()
-        ext.stop()
-        
+        sleep(abc)
+        altura(50)
+        sleep(abc)
+        altura.parar()
+        garra(160)
+        sleep(abc)
+        garra(130)
+        sleep(abc)
+        ext(40)
+        sleep(abc)
         
     elif(mov == Movimentos.Concluido):
-        pass
+        garra(130)
+        sleep(abc)
+        ext(60)
+        sleep(abc)
+        altura(50)
+        sleep(abc)
+        ext(80)
+        sleep(abc)
+        garra(180) # Pega a Peca
+        sleep(abc)
+        ext(20)
+        sleep(abc)
+        altura(110)
+        sleep(abc)
+        altura.parar()
+        ext(40)
+        sleep(abc)
+        base(180)
+        sleep(abc)
+        garra(130)
+        sleep(abc*2)
+        
     
     elif(mov == Movimentos.Descarte):
-        pass
-    
+        garra(130)
+        sleep(abc)
+        ext(60)
+        sleep(abc)
+        altura(50)
+        sleep(abc)
+        ext(80)
+        sleep(abc)
+        garra(180) # Pega a Peca
+        sleep(abc)
+        ext(20)
+        sleep(abc)
+        altura(110)
+        sleep(abc)
+        altura.parar()
+        ext(40)
+        sleep(abc)
+        base(50)
+        sleep(abc)
+        ext(60)
+        sleep(abc)
+        garra(130)
+        sleep(abc*2)    
     else:
         raise TypeError("Use apenas movimentos validos")
     setup()
 
+
 for i in range (1):
-    executar(Movimentos.Mesa)
+    executar(Movimentos.Descarte)
