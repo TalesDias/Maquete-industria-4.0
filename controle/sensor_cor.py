@@ -88,11 +88,8 @@ def cor(sensor):
 
 '''
 for i in range(900):
-    c = None
-    if(i%2==0):
-        c = cor(sensor_A)
-    else:
-        c = cor(sensor_B)
+    cor(sensor_B)
     
-    print(i, c)
+    #print(i, c)
+
 '''

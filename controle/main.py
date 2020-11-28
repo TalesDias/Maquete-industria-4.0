@@ -1,18 +1,18 @@
 from time import sleep
 from datetime import datetime
 from dateutil.parser import parse as parse_date
-import enum,sqlite3, threading
+import enum, sqlite3, memcache
 
 import braco, led_rgb, mesa
 import sensor_cor as sc, sensor_reflexivo as sf
 
 
-class Estado (enum.Enum):
+class Estados (enum.Enum):
     Inativo    = 0
     Ativo      = 1
     Manutencao = 2
 
-
+shared = None
 estado = None
 conn   = None
 
@@ -23,6 +23,7 @@ pc_tot  = None
 
 
 def setup():
+    global shared
     global estado
     global conn
     global pc_conc
@@ -31,10 +32,11 @@ def setup():
     global pc_tot
     
     braco.setup()
-    
-    estado = Estado.Inativo
     conn = sqlite3.connect('../maquete.db')
     c = conn.cursor()
+    estado = Estados.Inativo
+    shared = memcache.Client(['127.0.0.1:11211'])
+    shared.set("Estado", estado.name)
     
     pc_conc = 0
     pc_retr = 0
@@ -118,29 +120,34 @@ def executar():
     
     
 def loop():
+    global shared
     global estado
     global conn
     global pc_conc
     global pc_retr
     global pc_refu
     global pc_tot
-    
+
     while True:
-        if(estado == Estado.Manutencao):
+        estado = Estados[shared.get("Estado")]
+        if(estado == Estados.Manutencao):
             sleep(1)
             continue
         
         if (not sf.presente()):
-            estado = Estado.Inativo 
+            estado = Estados.Inativo
+            shared.set("Estado", estado.name)
             sleep(1)
             continue
         
-        estado = Estado.Ativo
+        estado = Estados.Ativo
+        shared.set("Estado", estado.name)
         log_file("Entrou em modo:ATIVO")
         log_file(f"iniciando {pc_tot} rotina do dia")
         
         resultado = executar()
         txt = ""
+
         
         if(resultado == 1):
             pc_retr += 1
@@ -164,15 +171,7 @@ def loop():
         
         pc_tot += 1 
     
-def run():
-
-	setup()
-
-	t = threading.Thread(target=loop(), daemon=True)
-	t.start()
-
-	return
-
-
+setup()
+loop()
 
 

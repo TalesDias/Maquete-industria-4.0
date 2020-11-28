@@ -11,8 +11,12 @@ cd "Desktop/Maquete-industria-4.0"
 echo "Iniciando a Maquete"
 date
 
+
 cd /home/pi/Desktop/Maquete-industria-4.0/website
 sudo /usr/bin/python3 serve.py &
+
+cd ../controle
+/usr/bin/python3 main.py &
 
 cd ../servidor
 source bin/activate

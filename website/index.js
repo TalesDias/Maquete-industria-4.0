@@ -34,7 +34,7 @@ $(document).ready(function (){
     }
     setInterval(function (){
         preencherDados()
-    },2500)
+    },500)
 
 })
 
@@ -75,6 +75,7 @@ function preencherDados(){
         let data = JSON.parse(req.responseText)
 
         let estado = data.estado
+	console.log(estado)
 
         let concluidas = 0
         let retrabalhadas = 0
@@ -85,7 +86,6 @@ function preencherDados(){
             else if (peca === "refugada") refugadas++
         }
 
-        $("#estado").text("Arrumar Aqui")
         $("#prod_dia").text(concluidas + retrabalhadas)
 
         $("#normais").text(concluidas)
@@ -95,16 +95,21 @@ function preencherDados(){
         $("#prod_mes").text(data.producao_mes)
         $("#ultima_manutencao").text(data.ultima_manutencao)
 
-        switch (estado) {
-            case "Ativo":
-                $("#btn_manutencao").css('display', 'none')
-                $("#btn_retomada").css('display', 'block')
-                break;
-            case "Manutenção":
-                $("#btn_manutencao").css('display', 'block')
+		
+        if (estado !== "Manutencao") {
+        	$("#btn_manutencao").css('display', 'block')
                 $("#btn_retomada").css('display', 'none')
-                break;
-        }
+
+		if(estado == "Ativo") $("#estado").text("Em Atividade");
+		else if(estado == "Inativo") $("#estado").text("Inativo");
+	}
+
+	else {
+               	$("#btn_manutencao").css('display', 'none')
+                $("#btn_retomada").css('display', 'block')
+		
+		$("#estado").text("Em Manutencao")
+ 	}
 
         if (refugadas > 10 || retrabalhadas > 15) {
             $("#precisa_manutencao").text("O sistema necessita de manutenção")

@@ -1,20 +1,16 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-import sys
-sys.path.append('../controle/')
-import main as Maquete
+from multiprocessing import Process
+import memcache, sys
 
-Maquete.run()
-
+shared = memcache.Client(['127.0.0.1:11211'])
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../maquete.db'
 
 db = SQLAlchemy(app)
-
-
 
 class Peca(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -38,6 +34,7 @@ class Usuario(db.Model):
 
 @app.route('/', methods=['GET'])
 def dashboard():
+    global shared
     pecas = []
     pecas_mes = 0
     for peca in Peca.query.order_by(Peca.date_created).all():
@@ -55,7 +52,7 @@ def dashboard():
     f.close()
 
     return {
-	'estado':Maquete.estado,
+    'estado': shared.get("Estado"),
         'pecas': pecas,
         'producao_mes': pecas_mes,
         'ultima_manutencao': ultima_man
@@ -153,6 +150,7 @@ def paradaOP():
 
 @app.route('/parada', methods=['POST'])
 def parada():
+    global shared
     apelido = request.json.get('apelido')
     tipo = request.json.get('tipo')
 
@@ -162,7 +160,7 @@ def parada():
 
 
     if tipo == "manutencao":
-        Maquete.estado = Maquete.Estados.Manutencao
+        shared.set("Estado", "Manutencao")
         linha = str(datetime.now())
         linha += " @ "
         linha += apelido
@@ -170,7 +168,7 @@ def parada():
         log_to_file(linha)
 
     elif tipo == "retomada":
-        Maquete.estado = Maquete.Estados.Inativo
+        shared.set("Estado", "Inativo")
         linha = str(datetime.now())
         linha += " @ "
         linha += apelido
