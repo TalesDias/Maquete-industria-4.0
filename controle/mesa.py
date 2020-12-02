@@ -21,8 +21,8 @@ class Posicoes(enum.Enum):
     Inicial  = 0
     Led_A    = 58
     Sensor_A = 150
-    Led_B    = 260
-    Sensor_B = 355
+    Led_B    = 265
+    Sensor_B = 351
 
 VELOCIDADE = 0.018
 pos_atual = Posicoes.Inicial

@@ -4,7 +4,7 @@ from dateutil.parser import parse as parse_date
 import enum, sqlite3, memcache
 
 import braco, led_rgb, mesa
-import sensor_cor as sc, sensor_reflexivo as sf
+import sensor_cor as sc, sensor_reflexivo as sf, controle_geral as cg
 
 
 class Estados (enum.Enum):
@@ -71,15 +71,28 @@ def executar():
     
     braco.executar(braco.Movimentos.Mesa)
     
+    # verificando se existe uma parada de emergencia 
+    if (not cg.ativado()): return 2
+    
     cor = None
     while(cor != sc.Cor.Verde):
+        # verificando se existe uma parada de emergencia 
+        if (not cg.ativado()): return 2
+        
         mesa.girar_para(mesa.Posicoes.Led_A)
         #led_rgb.gradiente(led_rgb.AMARELO, led_rgb.VERMELHO, led_rgb. LEDA)
         led_rgb.alternar(led_rgb.LED_A)
         sleep(4)
         led_rgb.alternar(led_rgb.LED_A)
+        
+        # verificando se existe uma parada de emergencia 
+        if (not cg.ativado()): return 2
+        
         mesa.girar_para(mesa.Posicoes.Sensor_A)
-        cor = sc.cor(sc.sensor_A) 
+        cor = sc.cor(sc.sensor_A)
+        
+        # verificando se existe uma parada de emergencia 
+        if (not cg.ativado()): return 2
         
         if(cor == sc.Cor.Amarelo):
             defeito = True
@@ -91,14 +104,23 @@ def executar():
         
     cor = None
     while(cor != sc.Cor.Verde):
+        # verificando se existe uma parada de emergencia 
+        if (not cg.ativado()): return 2
+    
         mesa.girar_para(mesa.Posicoes.Led_B)
         #led_rgb.gradiente(led_rgb.AMARELO, led_rgb.VERMELHO, led_rgb.LEDB)
         led_rgb.alternar(led_rgb.LED_B)
         sleep(4)
         led_rgb.alternar(led_rgb.LED_B)
 
+        # verificando se existe uma parada de emergencia 
+        if (not cg.ativado()): return 2
+
         mesa.girar_para(mesa.Posicoes.Sensor_B)
-        cor = sc.cor(sc.sensor_B) 
+        cor = sc.cor(sc.sensor_B)
+        
+        # verificando se existe uma parada de emergencia 
+        if (not cg.ativado()): return 2
         
         if(cor == sc.Cor.Amarelo):
             defeito = True
@@ -108,13 +130,18 @@ def executar():
             braco.executar(braco.Movimentos.Descarte)
             return 2
     
+    # verificando se existe uma parada de emergencia 
+    if (not cg.ativado()): return 2
         
     mesa.girar_para(mesa.Posicoes.Inicial)
+    
+    # verificando se existe uma parada de emergencia 
+    if (not cg.ativado()): return 2
+    
     braco.executar(braco.Movimentos.Concluido)
-    
-    
+        
     if (defeito):
-        return -1
+        return 1
     else:
         return 0
     
@@ -127,17 +154,26 @@ def loop():
     global pc_retr
     global pc_refu
     global pc_tot
-
+    delay = 0.4
     while True:
+        
+        led_rgb.alternar(led_rgb.LED_A)
+        led_rgb.alternar(led_rgb.LED_B)
+        sleep(delay)
+        led_rgb.alternar(led_rgb.LED_A)
+        led_rgb.alternar(led_rgb.LED_B)
+        sleep(delay)
+        
         estado = Estados[shared.get("Estado")]
         if(estado == Estados.Manutencao):
-            sleep(1)
+            continue
+        
+        if (not cg.ativado()):
             continue
         
         if (not sf.presente()):
             estado = Estados.Inativo
             shared.set("Estado", estado.name)
-            sleep(1)
             continue
         
         estado = Estados.Ativo

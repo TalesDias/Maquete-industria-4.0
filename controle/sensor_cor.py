@@ -70,26 +70,39 @@ def cor(sensor):
     vd = int(sum([valor(sensor, Filtro.Verde) for i in range(RESOLUCAO)])/RESOLUCAO)
     az = int(sum([valor(sensor, Filtro.Azul) for i in range(RESOLUCAO)])/RESOLUCAO)
     sf = int(sum([valor(sensor, Filtro.Sem_Filtro) for i in range(RESOLUCAO)])/RESOLUCAO)
-    print(vm, vd, az, sf)
+    print(vm, vd, az, sf, sep='\t')
     GPIO.output(sensor["led"], False)
 
-    
-    if(vm > 15000 and az > 10000 and sf > 20000):
-        return Cor.Amarelo
+    if(sensor == sensor_A):
+        if(vm > 10000 and vd > 9000):
+            return Cor.Amarelo
+            
+        elif(vm > 7000):
+            return Cor.Vermelho
         
-    elif(vm > 10000 and sf > 20000):
-        return Cor.Vermelho
+        elif(az > 5000):
+            return Cor.Verde
     
-    elif(az > 5000 and sf > 15000):
-        return Cor.Verde
+        else:
+            return None
+        
+    if(sensor == sensor_B):
+        if(vm > 9000 and vd > 8000):
+            return Cor.Amarelo
+            
+        elif(vm > 7000):
+            return Cor.Vermelho
+        
+        elif(az > 4000):
+            return Cor.Verde
     
-    else:
-        return None
+        else:
+            return None
 
 '''
 for i in range(900):
-    cor(sensor_B)
+    c = cor(sensor_B)
     
-    #print(i, c)
-
+    #
+    print("\""+str(i)+"\"", c)
 '''

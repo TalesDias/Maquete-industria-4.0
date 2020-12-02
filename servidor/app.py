@@ -74,13 +74,15 @@ def entrar():
     senha = request.json.get('senha')
 
     if apelido is None or senha is None:
-        return {}, 400
+        return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
 
     user = Usuario.query.\
         filter(Usuario.apelido == apelido).\
         filter(Usuario.senha == senha).first()
     if user is None:
-        return {}, 404
+        return {}, 404, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
 
     linha = str(datetime.now())
     linha += " @ "
@@ -103,7 +105,7 @@ def sairOP():
 def sair():
     apelido = request.json.get('apelido')
     if apelido is None:
-        return {}, 400
+        return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
     linha = str(datetime.now())
     linha += " @ "
@@ -127,7 +129,8 @@ def logOP():
 def log():
     apelido = request.json.get('apelido')
     if apelido is None:
-        return {}, 401
+        return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
     if apelido == 'administrador':
         with open('../log', 'r') as f:
             contents = f.readlines()
@@ -136,7 +139,8 @@ def log():
                 'contents': contents
             }, 200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
-    return {}, 401
+    return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
 
 
 @app.route('/parada', methods=['OPTIONS'])
@@ -155,9 +159,7 @@ def parada():
     tipo = request.json.get('tipo')
 
     if apelido is None or tipo is None:
-        return {}, 401
-
-
+        return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
     if tipo == "manutencao":
         shared.set("Estado", "Manutencao")
@@ -176,7 +178,7 @@ def parada():
         log_to_file(linha)
 
     else:
-        return {}, 401
+        return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
     return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
