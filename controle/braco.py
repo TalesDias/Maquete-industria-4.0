@@ -3,7 +3,6 @@ import enum
 from time import sleep
 
 pwm = pigpio.pi()
-atraso = 0.7
 
 class Movimentos(enum.Enum):
     Mesa      = 1
@@ -13,19 +12,22 @@ class Movimentos(enum.Enum):
 
 #Percorre um intervalo de jump partindo de X ate Y
 def arange(x, y, jump):
-    if(jump > 0):
+    if(x <= y):
         while x < y:
             yield x
             x += jump
-    else:
-        while x > y:
-            yield x 
-            x+= jump
+            
+    elif(x > y):
+        while x >= y:
+            yield x
+            x -= jump
+
 
 class Servo:
-    def __init__(self, porta):
+    def __init__(self, porta, posInicial,velocidade):
         self.porta = porta
-        
+        self.pos = posInicial
+        self.velocidade = velocidade
         pwm.set_mode(self.porta, pigpio.OUTPUT)
         pwm.set_PWM_frequency(self.porta, 50)
         pwm.set_servo_pulsewidth(self.porta, 0)
@@ -35,131 +37,135 @@ class Servo:
         pwm.set_PWM_frequency(self.porta, 0)
     
     def __call__(self, ang):
-        duty = ang*11 + 500
-        pwm.set_servo_pulsewidth(self.porta, duty)
+        self.deslizar(self.pos, ang, self.velocidade)
+        self.pos = ang
         
     def parar(self):
         pwm.set_servo_pulsewidth(self.porta, 0)
     
-    def deslizar(self, origem, destino):
+    def mover(self, ang):
+        # move instantaneamente para o angulo
+        # usar servo.parar() para finalizar
+        self.pos = ang
+        duty = ang*11 + 500
+        pwm.set_servo_pulsewidth(self.porta, duty)
+    
+    def deslizar(self, origem, destino, velocidade):
         d_origem = origem*11 + 500
         d_destino = destino*11 + 500
         
-        for i in arange(d_origem, d_destino, 0.1):
+        # torna velocidade diretamente proporcional
+        # deixando o codigo mais intuitivo
+        velocidade = 1/velocidade 
+        print(velocidade)
+        
+        for i in arange(d_origem, d_destino, 0.3):
             pwm.set_servo_pulsewidth(self.porta, i)
-            sleep(0.0001)
+            sleep(velocidade * 1e-3)
             pwm.set_servo_pulsewidth(self.porta, 0)
-            sleep(0.0001)
+            sleep(velocidade * 1e-3)
 
 #Declarando os servos motores
-garra = Servo(5)
-ext = Servo(6)
-altura = Servo(13)
-base = Servo(19)
-
+garra = Servo(5, 180, 15)
+base = Servo(19, 110, 1)
+ext = Servo(6, 40, 1)
+altura = Servo(13, 80, 1)
 
 def setup():
-    garra(180)
+    garra.mover(180)
     sleep(0.5)
     garra.parar()
     
-    base(110)
+    base.mover(110)
     sleep(0.5)
     base.parar()
     
-    ext(40)
+    ext.mover(40)
     sleep(0.5)
     ext.parar()
     
-    altura(80)
+    altura.mover(80)
     sleep(0.5)
     altura.parar()
     
 def executar(mov):
-    sleep(2)
+    sleep(1)
     if(mov == Movimentos.Mesa):
         base(174)
-        sleep(atraso)
+        
         garra(130)
-        sleep(atraso)
-        ext(70)
-        sleep(atraso)
-        altura(65)
-        sleep(atraso)
-        altura.parar()
-        ext.deslizar(70,80)
-        sleep(atraso)
-        garra(180)
-        sleep(atraso*2)
+        
+        ext(60)
+        
+        altura(63)
+        
+        ext(90)
+        
+        garra(180) # Pega a Peca
+        
         altura(90)
-        sleep(atraso)
+        
         ext(40)
-        sleep(atraso)
+        
         base(110)
-        sleep(atraso)
+        
         ext(70)
-        sleep(atraso)
+        
         altura(50)
-        sleep(atraso)
-        altura.parar()
+        
         garra(160)
-        sleep(atraso)
+        
         garra(130)
-        sleep(atraso)
+        
         ext(40)
-        sleep(atraso)
+        
         
     elif(mov == Movimentos.Concluido):
         garra(130)
-        sleep(atraso)
-        ext(60)
-        sleep(atraso)
-        altura(50)
-        sleep(atraso)
-        ext.deslizar(60, 80)
-        sleep(atraso)
-        garra(180) # Pega a Peca
-        sleep(atraso)
-        ext(20)
-        sleep(atraso)
-        altura(110)
-        sleep(atraso*3)
-        altura.parar()
+        
         ext(40)
-        sleep(atraso)
+        
+        altura(50)
+        
+        ext(80)
+        
+        garra(180) # Pega a Peca
+        
+        ext(20)
+        
+        altura(100)
+        
+        ext(40)
+        
         base(180)
-        sleep(atraso)
+        
         garra(130)
-        sleep(atraso*2)
         
     
     elif(mov == Movimentos.Descarte):
         garra(130)
-        sleep(atraso)
-        ext(60)
-        sleep(atraso)
-        altura(50)
-        sleep(atraso)
-        ext.deslizar(60, 80)
-        sleep(atraso)
-        garra(180) # Pega a Peca
-        sleep(atraso)
-        ext(20)
-        sleep(atraso)
-        altura(110)
-        sleep(atraso*3)
-        altura.parar()
+        
         ext(40)
-        sleep(atraso)
+        
+        altura(50)
+        
+        ext(80)
+        
+        garra(180) # Pega a Peca
+        
+        ext(20)
+        
+        altura(100)
+        
+        ext(40)
+        
         base(50)
-        sleep(atraso)
+        
         ext(60)
-        sleep(atraso)
+        
         garra(130)
-        sleep(atraso*2)    
+            
     else:
         raise TypeError("Use apenas movimentos validos")
+    sleep(1)
     setup()
-'''
-executar(Movimentos.Mesa)
-'''
