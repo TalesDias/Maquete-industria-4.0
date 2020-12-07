@@ -68,7 +68,8 @@ def log_file(msg):
     
 def executar():
     defeito = False
-    
+
+    braco.setup()
     braco.executar(braco.Movimentos.Mesa)
     
     # verificando se existe uma parada de emergencia 
@@ -163,13 +164,13 @@ def loop():
         
         if (not cg.ativado()):
             led_status.desligar()
+            sleep(0.5)
             continue
         else:
             led_status.ligar()
-            braco.setup()
-            sleep(1)
+            sleep(0.5)
         
-        if (not sr.presente()):
+        if (not (sr.presente() and cg.ativado())):
             estado = Estados.Inativo
             shared.set("Estado", estado.name)
             continue

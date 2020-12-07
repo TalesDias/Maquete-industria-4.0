@@ -57,7 +57,6 @@ class Servo:
         # torna velocidade diretamente proporcional
         # deixando o codigo mais intuitivo
         velocidade = 1/velocidade 
-        print(velocidade)
         
         for i in arange(d_origem, d_destino, 0.3):
             pwm.set_servo_pulsewidth(self.porta, i)
@@ -76,13 +75,13 @@ def setup():
     sleep(0.5)
     garra.parar()
     
-    base.mover(110)
-    sleep(0.5)
-    base.parar()
-    
     ext.mover(40)
     sleep(0.5)
     ext.parar()
+    
+    base.mover(110)
+    sleep(0.5)
+    base.parar()
     
     altura.mover(80)
     sleep(0.5)
