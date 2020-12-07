@@ -74,28 +74,31 @@ def cor(sensor):
     GPIO.output(sensor["led"], False)
 
     if(sensor == sensor_A):
-        if(vm > 10000 and vd > 9000):
+        
+        
+        if(vd > 10500 and sf > 16000):
+            return Cor.Verde
+        
+        elif(vd < 10000 and sf > 13500):
             return Cor.Amarelo
             
-        elif(vm > 7000):
+        elif(vm > 9000 and az > 8000):
             return Cor.Vermelho
-        
-        elif(az > 5000):
-            return Cor.Verde
     
         else:
             return None
         
     if(sensor == sensor_B):
-        if(vm > 9000 and vd > 8000):
+        
+        if(az > 14000 and sf > 16000):
+            return Cor.Verde
+        
+        elif(sf > 20000):
             return Cor.Amarelo
             
-        elif(vm > 7000):
+        elif(vm > 9000 and az > 9000):
             return Cor.Vermelho
         
-        elif(az > 4000):
-            return Cor.Verde
-    
         else:
             return None
 
