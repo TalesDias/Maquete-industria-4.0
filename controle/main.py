@@ -8,9 +8,11 @@ import sensor_cor as sc, sensor_reflexivo as sr, controle_geral as cg
 
 
 class Estados (enum.Enum):
-    Inativo    = 0
-    Ativo      = 1
-    Manutencao = 2
+    Desligado = 0
+    Inativo    = 1
+    Ativo      = 3
+    Manutencao = 4
+    Invalido    = 5 
 
 shared = None
 estado = None
@@ -34,7 +36,8 @@ def setup():
     braco.setup()
     conn = sqlite3.connect('../maquete.db')
     c = conn.cursor()
-    estado = Estados.Inativo
+    estado = Estados.Invalido
+    atualizar_estado()
     shared = memcache.Client(['127.0.0.1:11211'])
     shared.set("Estado", estado.name)
     
@@ -53,8 +56,15 @@ def setup():
             else:
                 pc_conc += 1
     c.close()
-    
-    
+
+def atualizar_estado():
+    global estado;
+    c = conn.cursor()
+    date = datetime.now()
+    c.execute(f"INSERT INTO estado (nome, date_created) VALUES('{estado.name}', '{str(date)}');")
+    conn.commit()
+        
+
 def log_file(msg):
     
     linha = str(datetime.now())
@@ -158,25 +168,38 @@ def loop():
     
     while True:
         
-        estado = Estados[shared.get("Estado")]
-        if(estado == Estados.Manutencao):
-            continue
-        
         if (not cg.ativado()):
+            if(estado != Estados.Desligado):
+                estado = Estados.Desligado
+                atualizar_estado()
+                
+            shared.set("Estado", estado.name)
             led_status.desligar()
             sleep(0.5)
             continue
-        else:
+        else:                
             led_status.ligar()
             sleep(0.5)
         
+        if(Estados[shared.get("Estado")] == Estados.Manutencao):
+            if(estado != Estados.Manutencao):
+                estado = estadoTemp
+                atualizar_estado()
+            continue
+        
         if (not (sr.presente() and cg.ativado())):
-            estado = Estados.Inativo
+            if(estado != Estados.Inativo):
+                estado = Estados.Inativo
+                atualizar_estado()
+                
             shared.set("Estado", estado.name)
             continue
         
+        
         estado = Estados.Ativo
+        atualizar_estado()
         shared.set("Estado", estado.name)
+        
         log_file("Entrou em modo:ATIVO")
         log_file(f"iniciando {pc_tot} rotina do dia")
         

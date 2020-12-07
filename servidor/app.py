@@ -20,6 +20,14 @@ class Peca(db.Model):
     def __repr__(self):
         return '<Task %r>' % self.id
 
+class Estado(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(200), nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return '<Task %r>' % self.id
+
 
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -35,29 +43,27 @@ class Usuario(db.Model):
 @app.route('/', methods=['GET'])
 def dashboard():
     global shared
+    
+    estados = []
+    for estado in Estado.query.order_by(Estado.date_created).all():
+        estados.append({
+            "nome": estado.nome,
+            "data": estado.date_created
+        })
+        
     pecas = []
-    pecas_mes = 0
     for peca in Peca.query.order_by(Peca.date_created).all():
-        if peca.date_created.day < datetime.now().day:
-            if peca.resultado != 'refugada':
-                pecas_mes += 1
-        else:
-            pecas.append(peca.resultado)
-
-    ultima_man = None
-    with open('../log', 'r') as f:
-        for line in f.readlines():
-            if line.find('requisitou parada de manutencao'):
-                ultima_man = line.split('@')[0]
-    f.close()
+        if peca.date_created.month > (datetime.now().month-1):
+            pecas.append({
+                "resultado": peca.resultado,
+                "data": peca.date_created
+            })
 
     return {
-    'estado': shared.get("Estado"),
-        'pecas': pecas,
-        'producao_mes': pecas_mes,
-        'ultima_manutencao': ultima_man
+        "estado_atual": shared.get("Estado"),
+        "estados": estados,
+        "pecas": pecas
     }, 200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
-
 
 @app.route('/login', methods=['OPTIONS'])
 def entrarOP():
@@ -92,6 +98,8 @@ def entrar():
 
     return {'cargo': user.cargo}, 200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
+
+
 @app.route('/logout', methods=['OPTIONS'])
 def sairOP():
     return {}, 200, {
@@ -114,6 +122,7 @@ def sair():
     log_to_file(linha)
 
     return {'msg': 'sucesso'}, 200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
 
 
 @app.route('/log', methods=['OPTIONS'])
