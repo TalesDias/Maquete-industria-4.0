@@ -129,7 +129,7 @@ def logOP():
 def log():
     apelido = request.json.get('apelido')
     if apelido is None:
-        return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+        return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
     if apelido == 'administrador':
         with open('../log', 'r') as f:

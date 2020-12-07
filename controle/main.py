@@ -3,8 +3,8 @@ from datetime import datetime
 from dateutil.parser import parse as parse_date
 import enum, sqlite3, memcache
 
-import braco, led_rgb, mesa
-import sensor_cor as sc, sensor_reflexivo as sf, controle_geral as cg
+import braco, led_rgb, mesa, led_status
+import sensor_cor as sc, sensor_reflexivo as sr, controle_geral as cg
 
 
 class Estados (enum.Enum):
@@ -154,24 +154,22 @@ def loop():
     global pc_retr
     global pc_refu
     global pc_tot
-    delay = 0.4
+    
     while True:
-        
-        led_rgb.alternar(led_rgb.LED_A)
-        led_rgb.alternar(led_rgb.LED_B)
-        sleep(delay)
-        led_rgb.alternar(led_rgb.LED_A)
-        led_rgb.alternar(led_rgb.LED_B)
-        sleep(delay)
         
         estado = Estados[shared.get("Estado")]
         if(estado == Estados.Manutencao):
             continue
         
         if (not cg.ativado()):
+            led_status.desligar()
             continue
+        else:
+            led_status.ligar()
+            braco.setup()
+            sleep(1)
         
-        if (not sf.presente()):
+        if (not sr.presente()):
             estado = Estados.Inativo
             shared.set("Estado", estado.name)
             continue
@@ -183,13 +181,12 @@ def loop():
         
         resultado = executar()
         txt = ""
-
         
         if(resultado == 1):
             pc_retr += 1
             txt = "retrabalhada"
             log_file(f'defeito na peca {pc_tot}')
-            log_file(f'finalizando {pc_tot} rotina do dia, {pc_conc + pc_retr} pecas retrabalhadas')
+            log_file(f'finalizando {pc_tot} rotina do dia, {pc_retr} pecas retrabalhadas')
             
         elif(resultado == 2): 
             pc_refu += 1
@@ -203,7 +200,9 @@ def loop():
             log_file(f'finalizando {pc_tot} rotina do dia, {pc_conc + pc_refu} pecas concluidas')
             
         c = conn.cursor()
-        c.execute(f"INSERT INTO peca (resultado, date_created) VALUES('{txt}', '{str(datetime.utcnow)}');")
+        date = datetime.now()
+        c.execute(f"INSERT INTO peca (resultado, date_created) VALUES('{txt}', '{str(date)}');")
+        conn.commit()
         
         pc_tot += 1 
     

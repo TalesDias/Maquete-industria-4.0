@@ -127,8 +127,8 @@ function preencherLog(){
     })
 
     //
-    console.log("fix")
-
+    // console.log("fix")
+    console.log("") 
     req.open('POST', server_addr+'/log')
     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     req.onload = function () {
