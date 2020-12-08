@@ -1,6 +1,6 @@
 let req  = new XMLHttpRequest()
-let base_addr = "http://192.168.1.9:80"
-let server_addr = "http://192.168.1.9:5000"
+let base_addr = "http://192.168.0.109:80"
+let server_addr = "http://192.168.0.109:5000"
 
 $(document).ready(function (){
 

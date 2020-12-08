@@ -131,22 +131,27 @@ def logOP():
             "Content-Type" : "text/html; charset=utf-8",
             "Allow" : "OPTIONS,POST",
             "Access-Control-Allow-Origin" : "*",
-            "Access-Control-Allow-Headers" : "*"
+            "Access-Control-Allow-Headers" : "*",
+            "Expires":"1"
         }
 
 @app.route('/log', methods=['POST'])
 def log():
-    apelido = request.json.get('apelido')
-    if apelido is None:
+    cargo = request.json.get('cargo')
+    if cargo is None:
         return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
-    if apelido == 'administrador':
+    if cargo == 'administrador':
         with open('../log', 'r') as f:
             contents = f.readlines()
             f.close()
             return {
                 'contents': contents
-            }, 200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+            }, 200, {
+                "Access-Control-Allow-Origin" : "*",
+                "Access-Control-Allow-Headers" : "*",
+                "Expires":"1"
+            }
 
     return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 

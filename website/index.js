@@ -1,6 +1,6 @@
 let req  = new XMLHttpRequest()
-let base_addr = "http://192.168.1.9:80"
-let server_addr = "http://192.168.1.9:5000"
+let base_addr = "http://192.168.0.109:80"
+let server_addr = "http://192.168.0.109:5000"
 
 $(document).ready(function (){
 
@@ -75,7 +75,6 @@ function preencherDados(){
         let data = JSON.parse(req.responseText)
 
         let estado = data.estado
-	console.log(estado)
 
         let concluidas = 0
         let retrabalhadas = 0
@@ -121,14 +120,11 @@ function preencherDados(){
 }
 
 function preencherLog(){
-    const apelido = sessionStorage.apelido
+	let req  = new XMLHttpRequest()
     const params =  JSON.stringify({
-        "apelido": apelido
+        "cargo": sessionStorage.cargo
     })
 
-    //
-    // console.log("fix")
-    console.log("") 
     req.open('POST', server_addr+'/log')
     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     req.onload = function () {
@@ -140,7 +136,6 @@ function preencherLog(){
             log.append(line)
             log.append("<br>")
         }
-        console.log(JSON.parse(req.responseText))
     }
     req.send(params)
 }
