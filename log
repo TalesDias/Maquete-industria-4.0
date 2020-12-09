@@ -23,3 +23,30 @@
 2020-12-07 19:56:00.852778 @ System -> falha na peca 5
 2020-12-07 19:56:00.853425 @ System -> finalizando 5 rotina do dia, 2 pecas refugadas
 2020-12-07 19:59:16.690132 @ maria-> Realizou login
+2020-12-07 21:10:39.493927 @ maria-> Realizou login
+2020-12-07 21:14:56.964632 @ maria-> Realizou login
+2020-12-07 21:15:06.624477 @ maria-> Requisitou parada de manutencao
+2020-12-07 21:48:31.730350 @ maria-> Realizou login
+2020-12-08 09:33:15.103203 @ maria-> Realizou login
+2020-12-08 09:36:24.588470 @ maria-> Requisitou parada de manutencao
+2020-12-08 09:38:55.875961 @ maria-> Realizou login
+2020-12-08 23:05:41.657917 @ System -> Entrou em modo:ATIVO
+2020-12-08 23:05:41.659556 @ System -> iniciando 24 rotina do dia
+2020-12-08 23:07:38.589493 @ System -> falha na peca 24
+2020-12-08 23:07:38.590191 @ System -> finalizando 24 rotina do dia, 6 pecas refugadas
+2020-12-08 23:08:23.745329 @ maria-> Realizou login
+2020-12-08 23:14:35.021887 @ maria-> Requisitou parada de manutencao
+2020-12-08 23:14:47.315044 @ maria-> Requisitou parada de retomada
+2020-12-08 23:14:47.590943 @ System -> Entrou em modo:ATIVO
+2020-12-08 23:14:47.591537 @ System -> iniciando 25 rotina do dia
+2020-12-08 23:15:37.809056 @ System -> falha na peca 25
+2020-12-08 23:15:37.809750 @ System -> finalizando 25 rotina do dia, 7 pecas refugadas
+2020-12-08 23:17:57.819723 @ maria-> Realizou logout
+2020-12-08 23:42:43.817966 @ System -> Entrou em modo:ATIVO
+2020-12-08 23:42:43.818620 @ System -> iniciando 24 rotina do dia
+2020-12-08 23:44:44.624832 @ System -> falha na peca 24
+2020-12-08 23:44:44.625543 @ System -> finalizando 24 rotina do dia, 6 pecas refugadas
+2020-12-09 00:13:24.576543 @ odairFunc-> Realizou login
+2020-12-09 00:13:39.487626 @ odairFunc-> Realizou logout
+2020-12-09 00:14:06.055422 @ odairAdmin-> Realizou login
+2020-12-09 00:14:18.817448 @ odairAdmin-> Realizou logout

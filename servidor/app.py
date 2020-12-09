@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
 from multiprocessing import Process
 import memcache, sys
 
@@ -46,14 +46,15 @@ def dashboard():
     
     estados = []
     for estado in Estado.query.order_by(Estado.date_created).all():
-        estados.append({
-            "nome": estado.nome,
-            "data": estado.date_created
-        })
+        if estado.date_created > (datetime.now() - timedelta(days=31)):
+            estados.append({            
+                "nome": estado.nome,            
+                "data": estado.date_created
+            })
         
     pecas = []
     for peca in Peca.query.order_by(Peca.date_created).all():
-        if peca.date_created.month > (datetime.now().month-1):
+        if peca.date_created > (datetime.now() - timedelta(days=7)):
             pecas.append({
                 "resultado": peca.resultado,
                 "data": peca.date_created

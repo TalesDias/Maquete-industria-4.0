@@ -183,7 +183,7 @@ def loop():
         
         if(Estados[shared.get("Estado")] == Estados.Manutencao):
             if(estado != Estados.Manutencao):
-                estado = estadoTemp
+                estado = Estados.Manutencao
                 atualizar_estado()
             continue
         
