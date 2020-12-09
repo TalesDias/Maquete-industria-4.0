@@ -10,34 +10,55 @@
 
     <div id="navbar">
         <ul class="navbar">
-            <li class="navbar-item">
-                <a class="navbar-link" id="dashboard" href="/">Dashboard</a>
+            <li class="navbar_item">
+                <a class="navbar_link" id="dashboard" href="/">Dashboard</a>
             </li>
-            <li id = "user" class="navbar-item">
-                <a class="navbar-link" id="login" href="/login.html">Entrar</a>
+            <li id = "user" class="navbar_item">
+                <a class="navbar_link" id="login" href="/login.html">Entrar</a>
             </li>
         </ul>
     </div>
 
     <div id="wrapper">
-        <h1>Estado: <span id="estado">-</span> </h1>
-
-        <div id="buttons">
-            <button id="btn_manutencao" class="btn">PARADA DE MANUTENÇÃO</button>
-            <button id="btn_retomada" class="btn">RETOMAR ATIVIDADES</button>
+        <div class="container">
+            <div>
+                <span id="txt_estado">Estado Atual: Inválido</span>
+                <div id="box_estado"></div>
+            </div>
+            <table>
+                <tr>
+                    <td>Ativo <div id="box_ativo"></div></td>
+                    <td>Inativo <div id="box_inativo"></div></td>
+                    <td>Inválido <div id="box_invalido"></div></td>
+                </tr>
+                <tr>
+                    <td>Manutenção <div id="box_manutencao"></div></td>
+                    <td>Emergência <div id="box_emergencia"></div></td>
+                </tr>
+            </table>
+            <div class="container" id="buttons">
+                <button id="btn_manutencao" class="btn">REQUISITAR PARADA DE MANUTENÇÃO</button>
+                <button id="btn_retomada" class="btn">REQUISITAR RETOMADA DE ATIVIDADES</button>
+            </div>
+            <hr>
         </div>
-
-        <p>Produção do Dia: <span id="prod_dia">-</span></p>
-        <ul>
-            <li>Normais: <span id="normais">-</span> Peças</li>
-            <li>Retrabalhadas: <span id="retrabalhadas">-</span> Peças</li>
-            <li>Refugadas: <span id="refugadas">-</span> Peças</li>
-        </ul>
-        <p> Produção do Mês: <span id="prod_mes">-</span> Peças</p>
-        <p> Última manutenção: <span id="ultima_manutencao">-</span></p>
-        <p id="precisa_manutencao"></p>
-
-        <div id="log_div">
+        <div class="container">
+            <div class="div_pizza">
+                <h1>Tempo em Atividade</h1>
+                <canvas class="pizza" id="c_estados"></canvas>
+            </div>
+            <div class="div_pizza">
+                <h1>Produção Diária</h1>
+                <canvas class="pizza" id="c_pecas" ></canvas>
+            </div>
+            <hr>
+        </div>
+        <div class="container">
+            <h1>Histórico Semanal</h1>
+            <canvas class="barra" id="c_producao"></canvas>
+            <hr>
+        </div>
+        <div class="container" id="log_div">
             Carregando...
         </div>
     </div>

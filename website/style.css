@@ -4,8 +4,16 @@ body{
     font-weight: bold;
 }
 
-ul{
+ul {
     list-style-type: none;
+}
+
+td {
+    padding: 5px 15px;
+}
+
+table {
+    margin: 5px 25px;
 }
 
 .navbar{
@@ -15,11 +23,11 @@ ul{
     background-color: #00BA96;
 }
 
-.navbar-item {
+.navbar_item {
     float: left;
 }
 
-.navbar-link  {
+.navbar_link  {
     display: block;
     color: black;
     text-align: center;
@@ -28,7 +36,7 @@ ul{
     font: bold 30px Arial, sans-serif;
 }
 
-.navbar-link:hover:not(.active) {
+.navbar_link:hover:not(.active) {
     background-color: #00876e;
 }
 
@@ -42,7 +50,7 @@ h1 {
 }
 
 #wrapper {
-    margin: 8% 25%;
+    margin: 8% 15%;
     background-color: #F5F5F6;
     padding: 30px;
     border-radius: 5px;
@@ -70,6 +78,8 @@ h1 {
     border-radius: 5px;
     font-size: larger;
     font-weight: bold;
+    align-content: center;
+    margin: auto;
 }
 
 #btn_manutencao{
@@ -89,6 +99,72 @@ h1 {
     text-align: center;
 }
 
+.div_pizza{
+    height: 500px;
+    width: 50%;
+    margin: auto;
+}
+
+.pizza{
+    margin: auto;
+    width: 100%;
+}
+
+.barra{
+    display: inline;
+    height: 500px;
+    width: 100%;
+    margin: 0;
+}
+
+#box_ativo{
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background-color:#40F500;
+}
+
+#box_inativo{
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background-color:#5089DE;
+}
+
+#box_manutencao{
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background-color:#FFF500;
+}
+
+#box_emergencia{
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    background-color:#FF162D;
+}
+
+#box_invalido{
+     display: inline-block;
+     height: 20px;
+     width: 20px;
+     background-color:#8F8F8F;
+ }
+
+#box_estado{
+     display: inline-block;
+     height: 35px;
+     width: 100%;
+     margin: 0 0 40px 0;
+     background-color:#8F8F8F;
+ }
+
+#txt_estado{
+    display: block;
+    font-size: 40px;
+}
+
 #log_div{
     display: none;
     border: 1px solid black;
@@ -99,5 +175,5 @@ h1 {
     overflow: scroll;
     font-size: small;
     color: #000;
-    background-color: #E1E2E1;;
+    background-color: #E1E2E1;
 }
