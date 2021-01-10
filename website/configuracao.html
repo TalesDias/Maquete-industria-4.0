@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Industria 4.0</title>
+    <script src="jquery.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div id="navbar">
+    <ul class="navbar">
+        <li class="navbar_item">
+            <a class="navbar_link" id="dashboard" href="/">Dashboard</a>
+        </li>
+        <li id = "user" class="navbar_item">
+            <a class="navbar_link" id="login" href="./login.html">Entrar</a>
+        </li>
+    </ul>
+</div>
+
+<div id="wrapper">
+    <div class="container">
+        <div>
+            <h2>
+                Corrigir Horário
+            </h2>
+            <p>
+                A maquete perde a noção de passagem do tempo enquanto desligada,
+                por isso se ela ficar desligada por mais de algumas horas,
+                é preciso regular nessa página.
+            </p>
+            <p>
+                A personalização de data não é obrigatória, use-a quando o momento atual apresentar dador incorretos.
+            </p>
+            Momento Atual: <span id="momento_atual"> 09/01/2021 12:00:00</span>
+            <br>
+            Personalizar: <input type="date" id="data_escolha"> <input type="time" id="horario_escolha">
+        </div>
+        <hr>
+    </div>
+    <div class="container">
+        <div>
+            <h2>
+                Modificar Histórico
+            </h2>
+            <p>
+                Aqui voce pode mudar a quantidade de peças produzidas nos últimos sete dias,
+                deixando os gráficos mais úteis para uma apresentação.
+            </p>
+            <table>
+                <tr>
+                    <td></td>
+                    <td>Concluídas</td>
+                    <td>Retrabalhadas</td>
+                    <td>Refugadas</td>
+                </tr>
+                <tr>
+                    <td id="pecas_dia_0">2021/1/0</td>
+                    <td><input id="pecas_00" ></td>
+                    <td><input id="pecas_01" ></td>
+                    <td><input id="pecas_02" ></td>
+                </tr>
+                <tr>
+                    <td id="pecas_dia_1">2021/1/1</td>
+                    <td><input id="pecas_10" ></td>
+                    <td><input id="pecas_11" ></td>
+                    <td><input id="pecas_12" ></td>
+                </tr>
+                <tr>
+                    <td id="pecas_dia_2">2021/1/2</td>
+                    <td><input id="pecas_20" ></td>
+                    <td><input id="pecas_21" ></td>
+                    <td><input id="pecas_22" ></td>
+                </tr>
+                <tr>
+                    <td id="pecas_dia_3">2021/1/3</td>
+                    <td><input id="pecas_30" ></td>
+                    <td><input id="pecas_31" ></td>
+                    <td><input id="pecas_32" ></td>
+                </tr>
+                <tr>
+                    <td id="pecas_dia_4">2021/1/4</td>
+                    <td><input id="pecas_40" ></td>
+                    <td><input id="pecas_41" ></td>
+                    <td><input id="pecas_42" ></td>
+                </tr>
+                <tr>
+                    <td id="pecas_dia_5">2021/1/5</td>
+                    <td><input id="pecas_50" ></td>
+                    <td><input id="pecas_51" ></td>
+                    <td><input id="pecas_52" ></td>
+                </tr>
+                <tr>
+                    <td id="pecas_dia_6">2021/1/6</td>
+                    <td><input id="pecas_60" ></td>
+                    <td><input id="pecas_61" ></td>
+                    <td><input id="pecas_62" ></td>
+                </tr>
+                <tr>
+                    <td id="pecas_dia_7">2021/1/7</td>
+                    <td><input id="pecas_70" ></td>
+                    <td><input id="pecas_71" ></td>
+                    <td><input id="pecas_72" ></td>
+                </tr>
+            </table>
+        </div>
+        <hr>
+    </div>
+    <div class="container">
+        <div>
+            <h2>
+                Modificar Tempo em Atividade
+            </h2>
+            <p>
+                É possível tambem  manipular o tempo que a maquete ficou em atividade.
+            </p>
+            <p>
+                O primeiro slider controla a porcentagem de tempo ativo em relação ao inativo,
+                o segundo diz quanto tempo a maquete permaneceu com essa  porcentagem.
+            </p>
+            <p>
+                Na prática, o controle do tempo controla o quão fácil é
+                mudar a porcentagem cadastrada com a utilização normal da maquete.
+                Ao escolher valores baixos, será fácil de ver esse tempo mudar,
+                enquanto valores mais altos tornam a porcentagem mais duradoura.
+            </p>
+
+            <div class="bar_container">
+                <label id="label_atividade_porcentagem" for="atividade_porcentagem">Porcentagem: 80%</label>
+                <input type="range" min="0" max="100" value="80" class="slider" id="atividade_porcentagem">
+            </div>
+
+            <div class="bar_container">
+                <label id="label_atividade_duracao"  for="atividade_duracao">Duração: 3h</label>
+                <input type="range" min="5" max="1440" value="180" class="slider" id="atividade_duracao">
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div class="container">
+        <div>
+            <h2>
+                Calibrar Sensor de Cor
+            </h2>
+            <p>
+                Os sensores de cor são extremamente sensíveis a variações (especialmente a luz solar),
+                por esse motivo devem ser calibrados antes do uso.
+            </p>
+            <p>
+                É importante que a maquete já esteja no local e na iluminação da apresentação antes de ser regulada.
+                Talvez seja necessário regular mais de uma vez no caso de uma exposição prolongada
+                em um ambiente minimamente exposto a luz solar.
+            </p>
+            <p>
+                Para calibrar, clique no botão abaixo e coloque a peça verde na esteira e aguarde a maquete
+                concluir o ciclo com a peça, em seguida, repita o processo com a peça amarela e Vermelha, NESSA ORDEM!!!
+            </p>
+            <p>
+                Se a operação for interrompida por um evento externo, os dador anteriorer serão utilizados.
+            </p>
+
+            <div>
+                <button id="calibracao_rapida" class="btn">
+                    Calibração Rápida (~ 1 min)
+                </button>
+                <button id="calibracao_precisa" class="btn">
+                    Calibração Precisa (~ 5 min)
+                </button>
+                <button id="calibracao_interromper" class="btn">
+                    Interromper calibração
+                </button>
+            </div>
+            <div class="bar_container">
+                <label id="label_progresso_calibracao" for="progresso_calibracao">Progresso: 0%</label>
+                <progress id="progresso_calibracao" value="32" max="100"> 32% </progress>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div class="container">
+        <div>
+            <h2>
+                Salvar alterações
+            </h2>
+            <p>
+                Lembre-se de salvar suas alterações clicando no botão abaixo,
+                do contrário TODO O TRABALHO será descartado.
+            </p>
+            <button class="btn">
+                Salvar
+            </button>
+        </div>
+        <hr>
+    </div>
+</div>
+
+<script src="configuracao.js"></script>
+</body>
+</html>
