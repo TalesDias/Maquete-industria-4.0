@@ -1,5 +1,5 @@
-const base_addr = "http://192.168.0.109:80"
-const server_addr = "http://192.168.0.109:5000"
+const base_addr = "http://192.168.1.9:80"
+const server_addr = "http://192.168.1.9:5000"
 
 $(document).ready(function (){
 
@@ -236,7 +236,7 @@ function preencherPizzaPecas(pecasDia){
     retr = retr === 0 ? 0 : retr/tot;
     refu = refu === 0 ? 0 : refu/tot;
 
-    const dados = [refu, retr, conc];
+    const dados = [conc, retr, refu];
     {
         let canvas = document.getElementById("c_pecas");
         let ctx = canvas.getContext('2d');
@@ -251,7 +251,7 @@ function preencherPizzaPecas(pecasDia){
             x: canvas.width / 2,
             y: raio + espessura / 2,
         }
-        const cores = ["#FF162D", "#FFF500", "#40F500"];
+        const cores = [ "#40F500","#FFF500", "#FF162D"];
 
         let stackedAngle = 0;
         ctx.save();
@@ -292,7 +292,7 @@ function preencherBarrasPecas(pecasMes){
     ctx.restore();
 
     let data = []
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 7; i++) {
         const pecasDia = pecasMes.get((new Date()).getDate() - i);
         const dia = new Date((new Date()).setDate((new Date()).getDate()-i));
         data[i] = {

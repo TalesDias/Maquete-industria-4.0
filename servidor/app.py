@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from multiprocessing import Process
-import memcache, sys
+import memcache, sys, os
 
 shared = memcache.Client(['127.0.0.1:11211'])
 
@@ -174,7 +174,7 @@ def parada():
     tipo = request.json.get('tipo')
 
     if apelido is None or tipo is None:
-        return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+        return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
     if tipo == "manutencao":
         shared.set("Estado", "Manutencao")
@@ -193,9 +193,47 @@ def parada():
         log_to_file(linha)
 
     else:
-        return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+        return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
     return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
+
+
+
+@app.route('/settime', methods=['OPTIONS'])
+def settimeOP():
+    return {}, 200, {
+            "Content-Type" : "text/html; charset=utf-8",
+            "Allow" : "OPTIONS,POST",
+            "Access-Control-Allow-Origin" : "*",
+            "Access-Control-Allow-Headers" : "*"
+        }
+
+@app.route('/settime', methods=['POST'])
+def settime():
+    global shared
+    apelido = request.json.get('apelido')
+    momento_text = request.json.get('momento')
+
+    if apelido is None or momento_text is None:
+        return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
+    if apelido != "sudo":
+        return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
+    momento = datetime.strptime(momento_text, "%d/%m/%Y %H:%M:%S")
+    
+    momento_formatado = momento.strftime("%Y-%m-%d %H:%M:%S")
+    
+    res = os.system('timedatectl set-time \'%s\' ' % momento_formatado)
+    
+    if(res != 0):
+        print(res)
+        return {},500, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+    
+
+    return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
 
 def log_to_file(linha):
     with open('../log', 'a') as f:

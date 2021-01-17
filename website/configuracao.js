@@ -1,7 +1,8 @@
 const base_addr = "http://192.168.0.109:80"
 const server_addr = "http://192.168.0.109:5000"
 
-$(document).ready( () =>{
+$(document).ready( () => {
+	sessionStorage.apelido = "sudo";
 
     $("#atividade_duracao").on("input", (ev) => {
         let minutos = parseInt(ev.target.value);
@@ -21,6 +22,7 @@ $(document).ready( () =>{
         }
     });
 
+
     $("#atividade_porcentagem").on("input", (ev) =>
         $("#label_atividade_porcentagem")[0].innerText = "Porcentagem: "+ev.target.value+ "%"
     );
@@ -37,5 +39,54 @@ $(document).ready( () =>{
     },1000);
 
 
+	$("#salvar_dados").click( _ => {
+		erro = 0;
+		
+		const momento = $("#momento_atual")[0].innerText;
+		console.log(momento)
+		const eM = enviarMomento(momento)
+		eM.onload = () => {
+			if(eM.status != 200){
+				alert("Erro ao enviar o horário");
+				erro = 1;
+			}
+		}
+		if(erro == 1) return;
+		
+	});
+
 
 });
+
+function enviarMomento(momento){
+    let req  = new XMLHttpRequest()
+	const apelido = sessionStorage.apelido
+    const params =  JSON.stringify({
+        apelido,
+        momento
+    })
+
+    req.open('POST', server_addr+'/settime')
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(params)
+    
+    return req;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
