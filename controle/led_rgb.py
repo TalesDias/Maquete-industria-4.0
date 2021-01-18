@@ -15,7 +15,13 @@ def alternar(led):
     led['ativado'] = not led['ativado']
     GPIO.output(led['porta'], led['ativado'])
 
-
+def desligar(led):
+    led['ativado'] = False
+    GPIO.output(led['porta'], led['ativado'])
+    
+def ligar(led):
+    led['ativado'] = True
+    GPIO.output(led['porta'], led['ativado'])
 
 
 '''

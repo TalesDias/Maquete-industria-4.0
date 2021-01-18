@@ -8,11 +8,12 @@ import sensor_cor as sc, sensor_reflexivo as sr, controle_geral as cg
 
 
 class Estados (enum.Enum):
-    Desligado = 0
+    Emergencia = 0
     Inativo    = 1
     Ativo      = 3
     Manutencao = 4
-    Invalido    = 5 
+    Invalido   = 5
+    Calibracao = 6
 
 shared = None
 estado = None
@@ -45,7 +46,6 @@ def setup():
     pc_retr = 0
     pc_refu = 0
     pc_tot  = 0
-
     for peca in c.execute('SELECT * FROM peca;'):
         if parse_date(peca[2]).day < datetime.now().day:
             pc_tot +=1
@@ -78,7 +78,7 @@ def log_file(msg):
     
 def executar():
     defeito = False
-
+    mesa.setup()
     braco.setup()
     braco.executar(braco.Movimentos.Mesa)
     
@@ -168,9 +168,16 @@ def loop():
     
     while True:
         
+       if(Estados[shared.get("Estado")] == Estados.Configuracao):
+            if(estado != Estados.Configuracao):
+                estado = Estados.Configuracao
+                atualizar_estado()
+            sleep(1)
+            continue
+        
         if (not cg.ativado()):
-            if(estado != Estados.Desligado):
-                estado = Estados.Desligado
+            if(estado != Estados.Emergencia):
+                estado = Estados.Emergencia
                 atualizar_estado()
                 
             shared.set("Estado", estado.name)

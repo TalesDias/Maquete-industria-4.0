@@ -1,0 +1,67 @@
+{
+   "sensor_A":{
+    "vermelho":{
+      "vmMax": 1234,
+      "vmMin": 1234,
+      "vdMax": 12,
+      "vdMin": 24,
+      "azMax": 43,
+      "azMin": 45,
+      "sfMax": 56,
+      "sfMin": 89
+    },
+    "verde":{
+      "vmMax": 1234,
+      "vmMin": 1234,
+      "vdMax": 12,
+      "vdMin": 24,
+      "azMax": 43,
+      "azMin": 45,
+      "sfMax": 56,
+      "sfMin": 89
+    },
+    "amarelo":{
+      "vmMax": 1234,
+      "vmMin": 1234,
+      "vdMax": 12,
+      "vdMin": 24,
+      "azMax": 43,
+      "azMin": 45,
+      "sfMax": 56,
+      "sfMin": 89
+    }
+  },
+
+  "sensor_B":{
+    "vermelho":{
+      "vmMax": 1234,
+      "vmMin": 1234,
+      "vdMax": 12,
+      "vdMin": 24,
+      "azMax": 43,
+      "azMin": 45,
+      "sfMax": 56,
+      "sfMin": 89
+    },
+    "verde":{
+      "vmMax": 1234,
+      "vmMin": 1234,
+      "vdMax": 12,
+      "vdMin": 24,
+      "azMax": 43,
+      "azMin": 45,
+      "sfMax": 56,
+      "sfMin": 89
+    },
+    "amarelo":{
+      "vmMax": 1234,
+      "vmMin": 1234,
+      "vdMax": 12,
+      "vdMin": 24,
+      "azMax": 43,
+      "azMin": 45,
+      "sfMax": 56,
+      "sfMin": 89
+    }
+	}
+}

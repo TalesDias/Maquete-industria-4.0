@@ -176,27 +176,27 @@ def parada():
     if apelido is None or tipo is None:
         return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
-    if tipo == "manutencao":
-        shared.set("Estado", "Manutencao")
-        linha = str(datetime.now())
-        linha += " @ "
-        linha += apelido
-        linha += "-> Requisitou parada de manutencao\n"
-        log_to_file(linha)
+        if(Estados[shared.get("Estado")] != "Calibracao"):
+            if tipo == "manutencao":
+                shared.set("Estado", "Manutencao")
+                linha = str(datetime.now())
+                linha += " @ "
+                linha += apelido
+                linha += "-> Requisitou parada de manutencao\n"
+                log_to_file(linha)
 
-    elif tipo == "retomada":
-        shared.set("Estado", "Inativo")
-        linha = str(datetime.now())
-        linha += " @ "
-        linha += apelido
-        linha += "-> Requisitou parada de retomada\n"
-        log_to_file(linha)
+            elif tipo == "retomada":
+                shared.set("Estado", "Inativo")
+                linha = str(datetime.now())
+                linha += " @ "
+                linha += apelido
+                linha += "-> Requisitou parada de retomada\n"
+                log_to_file(linha)
 
-    else:
-        return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+            else:
+                return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
     return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
-
 
 
 
@@ -234,6 +234,62 @@ def settime():
 
     return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
+
+
+
+
+@app.route('/calibracaocor', methods=['OPTIONS'])
+def calibracaocorOP():
+    return {}, 200, {
+            "Content-Type" : "text/html; charset=utf-8",
+            "Allow" : "OPTIONS,POST",
+            "Access-Control-Allow-Origin" : "*",
+            "Access-Control-Allow-Headers" : "*"
+        }
+
+@app.route('/calibracaocor', methods=['POST'])
+def calibracaocor():
+    global shared
+    apelido = request.json.get('apelido')
+    modo = request.json.get('modo')
+
+    if apelido is None or modo is None:
+        return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
+    if apelido != "sudo":
+        return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+    
+    amostras = None
+    timeout  = None
+    
+    if modo == "Rapido":
+        amostras = 10
+        timeout  = 50
+        
+    elif modo == "Moderado":
+        amostras = 20
+        timeout  = 100
+        
+    elif modo == "Lento":
+        amostras = 40
+        timeout  = 200
+        
+    shared.set("Amostras", amostras)
+    shared.set("Timeout", timeout)
+    shared.set("Estado", "Calibracao")    
+
+    return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
+
+
+
+@app.route('/configinicio', methods=['GET'])
+def configinicio():
+    global shared
+    
+    return {
+        "iniciado": shared.get("Iniciado")
+    }, 200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
 def log_to_file(linha):
     with open('../log', 'a') as f:

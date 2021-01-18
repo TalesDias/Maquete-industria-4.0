@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-import time, enum
+import time, enum, json
 
 class Filtro(enum.Enum):
     Verde    = 1
@@ -34,6 +34,10 @@ GPIO.setup(sensor_B["led"], GPIO.OUT)
 GPIO.output(sensor_B["led"], False)
 
 
+constantes = None
+with open('constantes_cor.json','r') as fp:
+    constantes = json.load(fp)
+    
 
 def valor(sensor, filtro = Filtro.Sem_Filtro):
     
@@ -61,11 +65,10 @@ def valor(sensor, filtro = Filtro.Sem_Filtro):
     
     return(NUM_CYCLES / duration)   #in Hz
 
-
 def cor(sensor):
+    time.sleep(0.1)
     GPIO.output(sensor["led"], True)
-    
-    RESOLUCAO = 100
+    RESOLUCAO = 500
     vm = int(sum([valor(sensor, Filtro.Vermelho) for i in range(RESOLUCAO)])/RESOLUCAO)
     vd = int(sum([valor(sensor, Filtro.Verde) for i in range(RESOLUCAO)])/RESOLUCAO)
     az = int(sum([valor(sensor, Filtro.Azul) for i in range(RESOLUCAO)])/RESOLUCAO)
@@ -75,37 +78,115 @@ def cor(sensor):
 
     if(sensor == sensor_A):
         
+        if(vm < constantes['sensor_A']['vermelho']['vmMax'] and vm > constantes['sensor_A']['vermelho']['vmMin'] and
+           vd < constantes['sensor_A']['vermelho']['vdMax'] and vd > constantes['sensor_A']['vermelho']['vdMin'] and
+           az < constantes['sensor_A']['vermelho']['azMax'] and az > constantes['sensor_A']['vermelho']['azMin'] and
+           sf < constantes['sensor_A']['vermelho']['sfMax'] and sf > constantes['sensor_A']['vermelho']['sfMin']):
+           
+           return Cor.Vermelho
         
-        if(vd > 10500 and sf > 16000):
-            return Cor.Verde
+        elif(vm < constantes['sensor_A']['amarelo']['vmMax'] and vm > constantes['sensor_A']['amarelo']['vmMin'] and
+           vd < constantes['sensor_A']['amarelo']['vdMax'] and vd > constantes['sensor_A']['amarelo']['vdMin'] and
+           az < constantes['sensor_A']['amarelo']['azMax'] and az > constantes['sensor_A']['amarelo']['azMin'] and
+           sf < constantes['sensor_A']['amarelo']['sfMax'] and sf > constantes['sensor_A']['amarelo']['sfMin']):
+           
+           return Cor.Amarelo
         
-        elif(vd < 10000 and sf > 13500):
-            return Cor.Amarelo
-            
-        elif(vm > 9000 and az > 8000):
-            return Cor.Vermelho
-    
+        elif(vm < constantes['sensor_A']['verde']['vmMax'] and vm > constantes['sensor_A']['verde']['vmMin'] and
+           vd < constantes['sensor_A']['verde']['vdMax'] and vd > constantes['sensor_A']['verde']['vdMin'] and
+           az < constantes['sensor_A']['verde']['azMax'] and az > constantes['sensor_A']['verde']['azMin'] and
+           sf < constantes['sensor_A']['verde']['sfMax'] and sf > constantes['sensor_A']['verde']['sfMin']):
+           
+           return Cor.Verde
+                
         else:
             return None
         
     if(sensor == sensor_B):
+        if(vm < constantes['sensor_B']['vermelho']['vmMax'] and vm > constantes['sensor_B']['vermelho']['vmMin'] and
+           vd < constantes['sensor_B']['vermelho']['vdMax'] and vd > constantes['sensor_B']['vermelho']['vdMin'] and
+           az < constantes['sensor_B']['vermelho']['azMax'] and az > constantes['sensor_B']['vermelho']['azMin'] and
+           sf < constantes['sensor_B']['vermelho']['sfMax'] and sf > constantes['sensor_B']['vermelho']['sfMin']):
+           
+           return Cor.Vermelho
         
-        if(az > 14000 and sf > 16000):
-            return Cor.Verde
+        elif(vm < constantes['sensor_B']['amarelo']['vmMax'] and vm > constantes['sensor_B']['amarelo']['vmMin'] and
+           vd < constantes['sensor_B']['amarelo']['vdMax'] and vd > constantes['sensor_B']['amarelo']['vdMin'] and
+           az < constantes['sensor_B']['amarelo']['azMax'] and az > constantes['sensor_B']['amarelo']['azMin'] and
+           sf < constantes['sensor_B']['amarelo']['sfMax'] and sf > constantes['sensor_B']['amarelo']['sfMin']):
+           
+           return Cor.Amarelo
         
-        elif(sf > 20000):
-            return Cor.Amarelo
-            
-        elif(vm > 9000 and az > 9000):
-            return Cor.Vermelho
-        
+        elif(vm < constantes['sensor_B']['verde']['vmMax'] and vm > constantes['sensor_B']['verde']['vmMin'] and
+           vd < constantes['sensor_B']['verde']['vdMax'] and vd > constantes['sensor_B']['verde']['vdMin'] and
+           az < constantes['sensor_B']['verde']['azMax'] and az > constantes['sensor_B']['verde']['azMin'] and
+           sf < constantes['sensor_B']['verde']['sfMax'] and sf > constantes['sensor_B']['verde']['sfMin']):
+           
+           return Cor.Verde
+                
         else:
             return None
+
+def leituraMaxMin(sensor, amostras, timeout):
+    time.sleep(0.1)
+    GPIO.output(sensor["led"], True)
+    RESOLUCAO = 100
+    
+    start = time.time()
+    
+    vmMax = int(sum([valor(sensor, Filtro.Vermelho) for i in range(RESOLUCAO)])/RESOLUCAO)
+    vmMin = vmMax
+    vdMax = int(sum([valor(sensor, Filtro.Verde) for i in range(RESOLUCAO)])/RESOLUCAO)
+    vdMin = vmMax
+    azMax = int(sum([valor(sensor, Filtro.Azul) for i in range(RESOLUCAO)])/RESOLUCAO)
+    azMin = azMax
+    sfMax = int(sum([valor(sensor, Filtro.Sem_Filtro) for i in range(RESOLUCAO)])/RESOLUCAO)
+    sfMin = sfMax
+
+    for j in range(amostras):
+        vm = int(sum([valor(sensor, Filtro.Vermelho) for i in range(RESOLUCAO)])/RESOLUCAO)
+        vd = int(sum([valor(sensor, Filtro.Verde) for i in range(RESOLUCAO)])/RESOLUCAO)
+        az = int(sum([valor(sensor, Filtro.Azul) for i in range(RESOLUCAO)])/RESOLUCAO)
+        sf = int(sum([valor(sensor, Filtro.Sem_Filtro) for i in range(RESOLUCAO)])/RESOLUCAO)
+        print(str(j) +" =>" ,vm, vd, az, sf, sep='\t')
+        
+        if(vm > vmMax): vmMax = vm
+        elif(vm < vmMin): vmMin = vm
+        if(vd > vdMax): vdMax = vd
+        elif(vd < vdMin): vdMin = vd
+        if(az > azMax): azMax = az
+        elif(az < azMin): azMin = az
+        if(sf > sfMax): sfMax = sf
+        elif(sf < sfMin): sfMin = sf
+        
+        delta = time.time() - start
+        if (delta > timeout): break
+    
+    vmDelta = vmMax - vmMin
+    vmMax += int(vmDelta/2)
+    vmMin -= int(vmDelta/2)
+        
+    vdDelta = vdMax - vdMin
+    vdMax += int(vdDelta/2)
+    vdMin -= int(vdDelta/2)
+        
+    azDelta = azMax - azMin
+    azMax += int(azDelta/2)
+    azMin -= int(azDelta/2)
+        
+    sfDelta = sfMax - sfMin
+    sfMax += int(sfDelta/2)
+    sfMin -= int(sfDelta/2)
+    
+    GPIO.output(sensor["led"], False)
+    
+    return {"vmMax":vmMax, "vmMin":vmMin, "vdMax":vdMax, "vdMin":vdMin, "azMax":azMax, "azMin":azMin, "sfMax":sfMax, "sfMin":sfMin}
+
 
 '''
 for i in range(900):
     c = cor(sensor_B)
     
     #
-    print("\""+str(i)+"\"", c)
+    print(str(i), c, sep='\t')
 '''

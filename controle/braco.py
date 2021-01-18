@@ -65,10 +65,10 @@ class Servo:
             sleep(velocidade * 1e-3)
 
 #Declarando os servos motores
-garra = Servo(5, 180, 15)
-base = Servo(19, 110, 1)
-ext = Servo(6, 40, 1)
-altura = Servo(13, 80, 1)
+garra = Servo(5, 180, 10)
+base = Servo(19, 110, 2)
+ext = Servo(13, 40, 1)
+altura = Servo(6, 80, 1)
 
 def setup():
     garra.mover(180)
@@ -79,88 +79,101 @@ def setup():
     sleep(0.5)
     ext.parar()
     
-    base.mover(110)
+    altura.mover(100)
+    sleep(0.5)
+    altura.parar()
+    
+    base.mover(95)
     sleep(0.5)
     base.parar()
     
-    altura.mover(80)
-    sleep(0.5)
-    altura.parar()
     
 def executar(mov):
     sleep(1)
     if(mov == Movimentos.Mesa):
-        base(174)
+        base(157)
         
         garra(130)
         
-        ext(60)
+        ext(80)
         
-        altura(63)
+        altura(65)
         
-        ext(90)
+        ext(110)
         
         garra(180) # Pega a Peca
         
-        altura(90)
+        altura(80)
         
         ext(40)
         
-        base(110)
+        base(95)
         
         ext(70)
         
         altura(50)
         
-        garra(160)
+        ext(100)
         
-        garra(130)
+        garra(130) # Solta a Peca
+        
+        altura(25)
+        
+        garra(150)
         
         ext(40)
         
         
     elif(mov == Movimentos.Concluido):
-        garra(130)
-        
-        ext(40)
+        ext(70)
         
         altura(50)
         
-        ext(80)
+        garra(130)
+        
+        ext(105)
         
         garra(180) # Pega a Peca
         
-        ext(20)
+        ext(50)
         
-        altura(100)
+        altura(70)
         
         ext(40)
         
-        base(180)
+        altura(90)
+        
+        base(165)
+        
+        ext(50)
         
         garra(130)
         
-    
+        
     elif(mov == Movimentos.Descarte):
-        garra(130)
-        
-        ext(40)
+        ext(70)
         
         altura(50)
         
-        ext(80)
+        garra(130)
+        
+        ext(105)
         
         garra(180) # Pega a Peca
         
-        ext(20)
+        ext(50)
         
-        altura(100)
+        altura(70)
         
         ext(40)
         
-        base(50)
+        altura(90)
         
-        ext(60)
+        base(40)
+        
+        ext(80)
+        
+        altura(70)
         
         garra(130)
             
