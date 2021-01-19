@@ -304,14 +304,18 @@ def modatividadeOP():
 def modatividade():
     global shared
     cargo = request.json.get('cargo')
-    porcentagem = int(request.json.get('porcentagem'))
-    duracao = int(request.json.get('duracao'))
+    porcentagem = request.json.get('porcentagem')
+    duracao     = request.json.get('duracao')
     
     if cargo is None or porcentagem is None or duracao is None:
         return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
     if cargo != "sudo":
         return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+    
+    
+    porcentagem = int(porcentagem)
+    duracao     = int(duracao)
     
     tempoAtivo = timedelta(seconds=int(porcentagem/100 * duracao * 60))
     
@@ -328,6 +332,68 @@ def modatividade():
     db.session.commit()
     
     return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
+
+
+@app.route('/modhistoricopecas', methods=['OPTIONS'])
+def modhistoricopecasOP():
+    return {}, 200, {
+            "Content-Type" : "text/html; charset=utf-8",
+            "Allow" : "OPTIONS,POST",
+            "Access-Control-Allow-Origin" : "*",
+            "Access-Control-Allow-Headers" : "*"
+        }
+
+@app.route('/modhistoricopecas', methods=['POST'])
+def modhistoricopecas():
+    global shared
+    cargo = request.json.get('cargo')
+    historico     = request.json.get('historico')
+    concluidas    = request.json.get('concluidas')
+    retrabalhadas = request.json.get('retrabalhadas')
+    refugadas     = request.json.get('refugadas')
+    
+    if cargo is None or historico is None or concluidas is None or retrabalhadas is None or refugadas is None:
+        return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
+    if cargo != "sudo":
+        return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+    
+    concluidas    = int(concluidas)
+    retrabalhadas = int(retrabalhadas)
+    refugadas     = int(refugadas)
+    
+    
+    for peca in Peca.query.all():
+        db.session.delete(peca)
+    
+    data = datetime.now()
+    
+    for i in range(concluidas):
+        peca = Peca(resultado="concluida", date_created=data)
+        db.session.add(peca)
+
+    for i in range(retrabalhadas):
+        peca = Peca(resultado="retrabalhada", date_created=data)
+        db.session.add(peca)
+
+    for i in range(refugadas):
+        peca = Peca(resultado="refugada", date_created=data)
+        db.session.add(peca)
+    
+    for i in range(6):
+        data = (datetime.now() - timedelta(days = (6 - i)))
+        for _ in range(int(historico[i])):
+            peca = Peca(resultado="concluida", date_created=data)
+            db.session.add(peca)
+
+    db.session.commit()
+    
+    
+    return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
+
+
 
 def log_to_file(linha):
     with open('../log', 'a') as f:

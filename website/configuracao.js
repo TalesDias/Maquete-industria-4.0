@@ -102,57 +102,56 @@ $(document).ready( () => {
 
 	// Envia os Dados necessarios
 	$("#salvar_dados").click( _ => {
-		let erro = -1;
+		
+		let func1 = null,func2 = null, func3 = null;
 
-        if ((data.valueAsDate !== null && horario.valueAsDate === null) || (data.valueAsDate === null && horario.valueAsDate !== null)){
-            alert("Escolha a data e o horário para corrigir o horário!")
-            return;
-        }
-		const momento = $("#momento_atual")[0].innerText;
-		const eM = enviarMomento(momento)
-		eM.onload = () => {
-			if(eM.status !== 200){
-				alert("Erro ao enviar o horário");
-				erro = 1;
-			}
-			else erro = 0;
-		}
-		if(erro === 1) return;
-
-		while (erro !== -1){
-		    //Espera a request anterior concluir
-        }
-
-		const porcentagem = $("#atividade_porcentagem")[0].value
-		const duracao = $("#atividade_duracao")[0].value
-		const mA = modAtividade(porcentagem, duracao)
-		mA.onload = () => {
-			if(mA.status !== 200){
-				alert("Erro ao enviar o alterar o tempo de atividade");
-				erro = 1;
+		func1 = () =>{
+		    if ((data.valueAsDate !== null && horario.valueAsDate === null) 
+		    || (data.valueAsDate === null && horario.valueAsDate !== null)){
+		        alert("Escolha a data e o horário para corrigir o horário!")
+		        return;
+		    }
+			const momento = $("#momento_atual")[0].innerText;
+			const eM = enviarMomento(momento)
+			eM.onload = () => {
+				if(eM.status !== 200){
+					alert("Erro ao enviar o horário");
+					erro = 1;
+				}
+				else func2();
 			}
 		}
-		if(erro === 1) return;
 
-		erro = -1;
-		const historico_pecas = [];
-        for (let i = 0; i <= 5 ; i++) historico_pecas[i] = $("#historico_peca_"+i)[0].value;
-        const conc =  $("#historico_hoje_concluidas")[0].value;
-        const retr =  $("#historico_hoje_retrabalhadas")[0].value;
-        const refu =  $("#historico_hoje_refugadas")[0].value;
-        const mHP = modHistoricoPecas(historico_pecas,conc, retr, refu);
-        mHP.onload = () => {
-            if(mHP.status !== 200){
-                alert("Erro ao enviar o alterar o historico de pecas");
-                erro = 1;
-            }
-            else erro = 0;
+		func2 = () => {
+			const porcentagem = $("#atividade_porcentagem")[0].value
+			const duracao = $("#atividade_duracao")[0].value
+			const mA = modAtividade(porcentagem, duracao)
+			mA.onload = () => {
+				if(mA.status !== 200){
+					alert("Erro ao enviar o alterar o tempo de atividade");
+				}
+				else func3();
+			}
+		}
+		
+		
+		func3 = () => {
+			const historico_pecas = [];
+		    for (let i = 0; i <= 5 ; i++) historico_pecas[i] = $("#historico_peca_"+i)[0].value;
+		    const conc =  $("#historico_hoje_concluidas")[0].value;
+		    const retr =  $("#historico_hoje_retrabalhadas")[0].value;
+		    const refu =  $("#historico_hoje_refugadas")[0].value;
+		    const mHP = modHistoricoPecas(historico_pecas, conc, retr, refu);
+		    mHP.onload = () => {
+		        if(mHP.status !== 200){
+		            alert("Erro ao enviar o alterar o historico de pecas");
+		        }
+		        else alert("Envio concluido com sucesso");
+		    }
         }
-
-        while (erro !== -1){
-            //Espera a request anterior concluir
-        }
-        alert("Envio concluido com sucesso");
+        
+        func1();
+        
     });
 });
 
@@ -212,14 +211,14 @@ function modAtividade(porcentagem, duracao){
 }
 
 
-function modHistoricoPecas(historico, concluidas, retrabalhads, refugadas){
+function modHistoricoPecas(historico, concluidas, retrabalhadas, refugadas){
     let req  = new XMLHttpRequest()
     const cargo = sessionStorage.cargo
     const params =  JSON.stringify({
         cargo,
         historico,
         concluidas,
-        retrabalhads,
+        retrabalhadas,
         refugadas,
     })
 
