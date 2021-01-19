@@ -31,16 +31,51 @@ $(document).ready( () => {
 
 
 	//atualiza o momento atual
-    setInterval(function(){
-        const currentDate = new Date();
-        const options = {
-            year: 'numeric', month: 'numeric', day: 'numeric',
-            hour: 'numeric', minute: 'numeric', second: 'numeric',
-        };
-        const dateTimeFormat = new Intl.DateTimeFormat('pt-BR', options);
+    const horario = $("#horario_escolha")[0];
+    const data = $("#data_escolha")[0];
+    const momentoAtual =  $("#momento_atual")[0];
+    setInterval(function() {
+        const tresHoras = 3*60*60*1000;
+        if (data.valueAsDate === null && horario.valueAsDate === null){
+            const currentDate = new Date();
+            const options = {
+                year: 'numeric', month: 'numeric', day: 'numeric',
+                hour: 'numeric', minute: 'numeric', second: 'numeric',
+            };
+            const dateTimeFormat = new Intl.DateTimeFormat('pt-BR', options);
 
-        $("#momento_atual")[0].innerText = dateTimeFormat.format(currentDate);
-    },1000);
+           momentoAtual.innerText = dateTimeFormat.format(currentDate);
+        }
+        else if (data.valueAsDate === null){
+            const horarioDate = new Date(horario.valueAsNumber + tresHoras);
+            const options = {
+                hour: 'numeric', minute: 'numeric', second: 'numeric',
+            };
+            const dateTimeFormat = new Intl.DateTimeFormat('pt-BR', options);
+
+            momentoAtual.innerText = "--/--/---- " + dateTimeFormat.format(horarioDate);
+        }
+        else if (horario.valueAsDate === null){
+            const dataDate = data.valueAsDate;
+            const options = {
+                year: 'numeric', month: 'numeric', day: 'numeric',
+            };
+            const dateTimeFormat = new Intl.DateTimeFormat('pt-BR', options);
+
+            momentoAtual.innerText = dateTimeFormat.format(dataDate) + " --:--:--" ;
+        }
+        else {
+            const customizadoDate = new Date(data.valueAsNumber + horario.valueAsNumber + tresHoras);
+            const options = {
+                year: 'numeric', month: 'numeric', day: 'numeric',
+                hour: 'numeric', minute: 'numeric', second: 'numeric',
+            };
+            const dateTimeFormat = new Intl.DateTimeFormat('pt-BR', options);
+
+            momentoAtual.innerText = dateTimeFormat.format(customizadoDate);
+        }
+    },1000)
+
 
 	//Inicia a Calibracao dos sensores
 	$("#calibracao_rapida").click(_ => calibrar("Rapido"))
@@ -49,28 +84,32 @@ $(document).ready( () => {
 
 	// Envia os Dados necessarios
 	$("#salvar_dados").click( _ => {
-		erro = 0;
-		
+		let erro = 0;
+
+        if ((data.valueAsDate !== null && horario.valueAsDate === null) || (data.valueAsDate === null && horario.valueAsDate !== null)){
+            alert("Escolha a data e o horário para corrigir o horário!")
+            return;
+        }
 		const momento = $("#momento_atual")[0].innerText;
 		const eM = enviarMomento(momento)
 		eM.onload = () => {
-			if(eM.status != 200){
+			if(eM.status !== 200){
 				alert("Erro ao enviar o horário");
 				erro = 1;
 			}
 		}
-		if(erro == 1) return;
+		if(erro === 1) return;
 
 		const porcentagem = $("#atividade_porcentagem")[0].value
 		const duracao = $("#atividade_duracao")[0].value
 		const mA = modAtividade(porcentagem, duracao)
 		mA.onload = () => {
-			if(mA.status != 200){
+			if(mA.status !== 200){
 				alert("Erro ao enviar o alterar o tempo de atividade");
 				erro = 1;
 			}
 		}
-		if(erro == 1) return;
+		if(erro === 1) return;
 
 	});
 
@@ -89,9 +128,8 @@ function calibrar(modo){
     req.open('POST', server_addr+'/calibracaocor')
     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     req.onload = () => {
-			if(req.status != 200){
+			if(req.status !== 200){
 				alert("Erro ao enviar o Calibrar o sensor");
-				erro = 1;
 			}
 		}
     
