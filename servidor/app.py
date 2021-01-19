@@ -212,13 +212,13 @@ def settimeOP():
 @app.route('/settime', methods=['POST'])
 def settime():
     global shared
-    apelido = request.json.get('apelido')
+    cargo = request.json.get('cargo')
     momento_text = request.json.get('momento')
 
-    if apelido is None or momento_text is None:
+    if cargo is None or momento_text is None:
         return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
-    if apelido != "sudo":
+    if cargo != "sudo":
         return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
     momento = datetime.strptime(momento_text, "%d/%m/%Y %H:%M:%S")
@@ -250,13 +250,13 @@ def calibracaocorOP():
 @app.route('/calibracaocor', methods=['POST'])
 def calibracaocor():
     global shared
-    apelido = request.json.get('apelido')
+    cargo = request.json.get('cargo')
     modo = request.json.get('modo')
 
-    if apelido is None or modo is None:
+    if cargo is None or modo is None:
         return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
-    if apelido != "sudo":
+    if cargo != "sudo":
         return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
     
     amostras = None
@@ -281,8 +281,6 @@ def calibracaocor():
     return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
 
-
-
 @app.route('/configinicio', methods=['GET'])
 def configinicio():
     global shared
@@ -290,6 +288,46 @@ def configinicio():
     return {
         "iniciado": shared.get("Iniciado")
     }, 200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
+
+
+@app.route('/modatividade', methods=['OPTIONS'])
+def modatividadeOP():
+    return {}, 200, {
+            "Content-Type" : "text/html; charset=utf-8",
+            "Allow" : "OPTIONS,POST",
+            "Access-Control-Allow-Origin" : "*",
+            "Access-Control-Allow-Headers" : "*"
+        }
+
+@app.route('/modatividade', methods=['POST'])
+def modatividade():
+    global shared
+    cargo = request.json.get('cargo')
+    porcentagem = int(request.json.get('porcentagem'))
+    duracao = int(request.json.get('duracao'))
+    
+    if cargo is None or porcentagem is None or duracao is None:
+        return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+
+    if cargo != "sudo":
+        return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+    
+    tempoAtivo = timedelta(seconds=int(porcentagem/100 * duracao * 60))
+    
+    inicio     = Estado(nome='Inativo',  date_created=(datetime.now() - timedelta(minutes= duracao)))
+    fimAtivo   = Estado(nome="Ativo",    date_created=(datetime.now() - tempoAtivo))
+    fimInativo = Estado(nome="Invalido", date_created=datetime.now())
+    
+    for estado in Estado.query.all():
+        db.session.delete(estado)
+    
+    db.session.add(inicio)
+    db.session.add(fimAtivo)
+    db.session.add(fimInativo)
+    db.session.commit()
+    
+    return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
 def log_to_file(linha):
     with open('../log', 'a') as f:

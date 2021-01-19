@@ -1,5 +1,5 @@
-const base_addr = "http://192.168.1.9:80"
-const server_addr = "http://192.168.1.9:5000"
+const base_addr = "http://192.168.0.109:80"
+const server_addr = "http://192.168.0.109:5000"
 
 $(document).ready(function (){
 
@@ -143,15 +143,23 @@ function preencherPizzaEstados(estados) {
         estado.data = new Date(estado.data);
         let delta = anterior.data - estado.data;
 
-        if(estado.nome === "Invalido") continue;
-
         if(anterior.nome === "Ativo"){
             ativo += delta;
         }
         else if (anterior.nome === "Inativo"){
             inativo += delta;
         }
+		else continue
         anterior = estado;
+
+    }
+
+    let delta = anterior.data - new Date();;
+    if(anterior.nome === "Ativo"){
+        ativo += delta;
+    }
+    else if (anterior.nome === "Inativo"){
+        inativo += delta;
     }
 
     const tot = ativo + inativo;

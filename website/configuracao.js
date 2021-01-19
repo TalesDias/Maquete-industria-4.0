@@ -2,7 +2,7 @@ const base_addr = "http://192.168.0.109:80"
 const server_addr = "http://192.168.0.109:5000"
 
 $(document).ready( () => {
-	sessionStorage.apelido = "sudo";
+	sessionStorage.cargo = "sudo";
 
 	// Controla label do slider duracao
     $("#atividade_duracao").on("input", (ev) => {
@@ -61,16 +61,28 @@ $(document).ready( () => {
 		}
 		if(erro == 1) return;
 
+		const porcentagem = $("#atividade_porcentagem")[0].value
+		const duracao = $("#atividade_duracao")[0].value
+		const mA = modAtividade(porcentagem, duracao)
+		mA.onload = () => {
+			if(mA.status != 200){
+				alert("Erro ao enviar o alterar o tempo de atividade");
+				erro = 1;
+			}
+		}
+		if(erro == 1) return;
+
 	});
 
 
 });
 
+
 function calibrar(modo){
     let req  = new XMLHttpRequest()
-	const apelido = sessionStorage.apelido
+	const cargo = sessionStorage.cargo
     const params =  JSON.stringify({
-        apelido,
+        cargo,
         modo
     })
 
@@ -88,11 +100,12 @@ function calibrar(modo){
     return req;
 }
 
+
 function enviarMomento(momento){
     let req  = new XMLHttpRequest()
-	const apelido = sessionStorage.apelido
+	const cargo = sessionStorage.cargo
     const params =  JSON.stringify({
-        apelido,
+        cargo,
         momento
     })
 
@@ -102,6 +115,24 @@ function enviarMomento(momento){
     
     return req;
 }
+
+
+function modAtividade(porcentagem, duracao){
+	let req  = new XMLHttpRequest()
+	const cargo = sessionStorage.cargo
+    const params =  JSON.stringify({
+        cargo,
+        porcentagem, 
+		duracao
+    })
+
+    req.open('POST', server_addr+'/modatividade')
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");    
+    req.send(params)
+    
+    return req;
+}
+
 
 
 
