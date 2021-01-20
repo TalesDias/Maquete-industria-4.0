@@ -281,12 +281,12 @@ def calibracaocor():
     return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
 
-@app.route('/configinicio', methods=['GET'])
-def configinicio():
+@app.route('/configprogresso', methods=['GET'])
+def configprogresso():
     global shared
     
     return {
-        "iniciado": shared.get("Iniciado")
+        "progresso": shared.get("Progresso")
     }, 200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
 

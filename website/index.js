@@ -154,7 +154,7 @@ function preencherPizzaEstados(estados) {
 
     }
 
-    let delta = anterior.data - new Date();;
+    let delta = anterior.data - new Date();
     if(anterior.nome === "Ativo"){
         ativo += delta;
     }

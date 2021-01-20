@@ -168,13 +168,55 @@ function calibrar(modo){
     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     req.onload = () => {
 			if(req.status !== 200){
-				alert("Erro ao enviar o Calibrar o sensor");
+				alert("Erro ao tentar Calibrar o sensor");
+			}
+			else {
+				controlaProgressoCalibracao(false)
 			}
 		}
     
     req.send(params)
     
     return req;
+}
+
+function controlaProgressoCalibracao(){
+	let estadoAtual = 0;
+	let flagIniciado = false;
+	const barra  = $("#progresso_calibracao")[0];
+	const label  = $("#label_progresso_calibracao")[0];
+
+	const rotinaVerificacao = () => {
+		let req  = new XMLHttpRequest()
+		req.open('GET', server_addr+'/configprogresso');
+		req.onload = function () {
+		    const data = JSON.parse(req.responseText);
+			data.progresso = parseInt(data.progresso);
+
+			if(data.progresso !== estadoAtual){
+				flagIniciado = true;
+				estadoAtual = data.progresso;
+				let porcentagem = null;
+				if (estadoAtual === 7){
+					porcentagem = 100;
+				}
+				else if(estadoAtual === 0){
+				porcentagem = 0
+				}
+				else {
+					porcentagem = parseInt((estadoAtual-1)/6*100);
+				}
+				barra.value = porcentagem;
+				label.innerText = "Progresso: "+porcentagem+"%"
+			}
+		}
+		req.send();
+
+		if(estadoAtual !== 0 && flagIniciado){
+			clearInterval(rotinaVerificacao);	
+		}
+	}
+	setInterval(rotinaVerificacao, 500);
 }
 
 

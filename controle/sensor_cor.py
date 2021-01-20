@@ -183,10 +183,12 @@ def leituraMaxMin(sensor, amostras, timeout):
     return {"vmMax":vmMax, "vmMin":vmMin, "vdMax":vdMax, "vdMin":vdMin, "azMax":azMax, "azMin":azMin, "sfMax":sfMax, "sfMin":sfMin}
 
 
-'''
-for i in range(900):
-    c = cor(sensor_B)
-    
-    #
-    print(str(i), c, sep='\t')
-'''
+def sense():
+    for i in range(900):
+        c = cor(sensor_A)
+        
+        #
+        print(str(i), c, sep='\t')
+
+
+#sense()

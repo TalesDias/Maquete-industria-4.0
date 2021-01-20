@@ -57,33 +57,39 @@ while True:
     braco.executar(braco.Movimentos.Mesa)
     '''
     
-    shared.set("Iniciado", "0")
+    shared.set("Progresso", "1")
     
     #Pegando dados das pecas no sensor A
     configuracoes['sensor_A'] = {}
     mesa.girar_para(mesa.Posicoes.Sensor_A)
     configuracoes['sensor_A']['vermelho'] = sc.leituraMaxMin(sc.sensor_A, amostras, timeout) 
+    shared.set("Progresso", "2")
     
     mesa.girar(DELTA_DISTANCIA,-1)
-    configuracoes['sensor_A']['amarelo'] = sc.leituraMaxMin(sc.sensor_A, amostras, timeout) 
+    configuracoes['sensor_A']['amarelo'] = sc.leituraMaxMin(sc.sensor_A, amostras, timeout)
+    shared.set("Progresso", "3")
     
     mesa.girar(DELTA_DISTANCIA,-1)
     configuracoes['sensor_A']['verde'] = sc.leituraMaxMin(sc.sensor_A, amostras, timeout) 
+    shared.set("Progresso", "4")
         
     
     #Pegando dados das pecas no sensor B
     configuracoes['sensor_B'] = {}
     mesa.girar_para(mesa.Posicoes.Sensor_B)
     configuracoes['sensor_B']['verde'] = sc.leituraMaxMin(sc.sensor_B, amostras, timeout) 
+    shared.set("Progresso", "5")
     
     mesa.girar(DELTA_DISTANCIA,1)
     configuracoes['sensor_B']['amarelo'] = sc.leituraMaxMin(sc.sensor_B, amostras, timeout) 
+    shared.set("Progresso", "6")
     
     mesa.girar(DELTA_DISTANCIA,1)
     configuracoes['sensor_B']['vermelho'] = sc.leituraMaxMin(sc.sensor_B, amostras, timeout) 
+    shared.set("Progresso", "7")
     
     mesa.girar_para(mesa.Posicoes.Inicial)
-    shared.set("Iniciado", "0")
+    shared.set("Progresso", "0")
     
     # Salvando Dados
     with open("constantes_cor.json", 'w') as f:

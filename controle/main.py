@@ -168,9 +168,9 @@ def loop():
     
     while True:
         
-       if(Estados[shared.get("Estado")] == Estados.Configuracao):
-            if(estado != Estados.Configuracao):
-                estado = Estados.Configuracao
+        if(Estados[shared.get("Estado")] == Estados.Calibracao):
+            if(estado != Estados.Calibracao):
+                estado = Estados.Calibracao
                 atualizar_estado()
             sleep(1)
             continue
