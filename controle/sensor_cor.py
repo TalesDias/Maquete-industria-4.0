@@ -16,7 +16,6 @@ class Cor(enum.Enum):
 
 NUM_CYCLES = 100
 
-
 sensor_A = {"s2": 21, "s3": 19, "sinal": 23, 'led': 36}
 sensor_B = {"s2": 26, "s3": 22, "sinal": 24, 'led': 32}
 
@@ -35,9 +34,12 @@ GPIO.output(sensor_B["led"], False)
 
 
 constantes = None
-with open('constantes_cor.json','r') as fp:
-    constantes = json.load(fp)
-    
+def atualizar_constantes():
+    global constantes
+    with open('constantes_cor.json','r') as fp:
+        constantes = json.load(fp)
+        
+atualizar_constantes()    
 
 def valor(sensor, filtro = Filtro.Sem_Filtro):
     
@@ -68,7 +70,7 @@ def valor(sensor, filtro = Filtro.Sem_Filtro):
 def cor(sensor):
     time.sleep(0.1)
     GPIO.output(sensor["led"], True)
-    RESOLUCAO = 500
+    RESOLUCAO = 200
     vm = int(sum([valor(sensor, Filtro.Vermelho) for i in range(RESOLUCAO)])/RESOLUCAO)
     vd = int(sum([valor(sensor, Filtro.Verde) for i in range(RESOLUCAO)])/RESOLUCAO)
     az = int(sum([valor(sensor, Filtro.Azul) for i in range(RESOLUCAO)])/RESOLUCAO)
@@ -130,7 +132,7 @@ def cor(sensor):
 def leituraMaxMin(sensor, amostras, timeout):
     time.sleep(0.1)
     GPIO.output(sensor["led"], True)
-    RESOLUCAO = 100
+    RESOLUCAO = 250
     
     start = time.time()
     
@@ -162,33 +164,30 @@ def leituraMaxMin(sensor, amostras, timeout):
         delta = time.time() - start
         if (delta > timeout): break
     
-    vmDelta = vmMax - vmMin
-    vmMax += int(vmDelta/2)
-    vmMin -= int(vmDelta/2)
+    vmDelta = max(vmMax - vmMin, 3000)
+    vmMax += int(vmDelta)
+    vmMin -= int(vmDelta)
         
-    vdDelta = vdMax - vdMin
-    vdMax += int(vdDelta/2)
-    vdMin -= int(vdDelta/2)
+    vdDelta = max(vdMax - vdMin, 3000)
+    vdMax += int(vdDelta)
+    vdMin -= int(vdDelta)
+
+    azDelta = max(azMax - azMin, 3000)
+    azMax += int(azDelta)
+    azMin -= int(azDelta)
         
-    azDelta = azMax - azMin
-    azMax += int(azDelta/2)
-    azMin -= int(azDelta/2)
-        
-    sfDelta = sfMax - sfMin
-    sfMax += int(sfDelta/2)
-    sfMin -= int(sfDelta/2)
+    sfDelta = max(sfMax - sfMin, 3000)
+    sfMax += int(sfDelta)
+    sfMin -= int(sfDelta)
     
     GPIO.output(sensor["led"], False)
     
     return {"vmMax":vmMax, "vmMin":vmMin, "vdMax":vdMax, "vdMin":vdMin, "azMax":azMax, "azMin":azMin, "sfMax":sfMax, "sfMin":sfMin}
 
 
+#essa funcao tem propositos de teste apenas
 def sense():
     for i in range(900):
         c = cor(sensor_A)
-        
-        #
         print(str(i), c, sep='\t')
-
-
 #sense()

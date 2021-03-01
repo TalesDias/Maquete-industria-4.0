@@ -258,24 +258,8 @@ def calibracaocor():
 
     if cargo != "sudo":
         return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
-    
-    amostras = None
-    timeout  = None
-    
-    if modo == "Rapido":
-        amostras = 10
-        timeout  = 50
-        
-    elif modo == "Moderado":
-        amostras = 20
-        timeout  = 100
-        
-    elif modo == "Lento":
-        amostras = 40
-        timeout  = 200
-        
-    shared.set("Amostras", amostras)
-    shared.set("Timeout", timeout)
+
+    shared.set("Modo", modo)
     shared.set("Estado", "Calibracao")    
 
     return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}

@@ -7,20 +7,35 @@ import braco, led_rgb, mesa, led_status
 import sensor_cor as sc, sensor_reflexivo as sr, controle_geral as cg
 
 
-shared = shared = memcache.Client(['127.0.0.1:11211'])
+shared = memcache.Client(['127.0.0.1:11211'])
     
 
 DELTA_DISTANCIA = 40
     
 while True:
     
-    if(shared.get("Estado") != "Calibracao" or not cg.ativado()):
-        sleep(3)
+    if(not (shared.get("Estado") == "Calibracao" and cg.ativado())):
+        sleep(0.1)
         continue
     
+    modo = "Lento" #shared.get("Modo")
+    amostras = None
+    timeout  = None
     configuracoes = {}
-    amostras = shared.get("Amostras")
-    timeout  = shared.get("Timeout")
+    
+    
+    if modo == "Rapido":
+        amostras = 10
+        timeout  = 50
+        
+    elif modo == "Moderado":
+        amostras = 20
+        timeout  = 100
+        
+    elif modo == "Lento":
+        amostras = 15
+        timeout  = 2000
+        
     
     mesa.setup()
     braco.setup()
@@ -56,7 +71,6 @@ while True:
     led_rgb.desligar(led_rgb.LED_B)
     braco.executar(braco.Movimentos.Mesa)
     '''
-    
     shared.set("Progresso", "1")
     
     #Pegando dados das pecas no sensor A
@@ -72,7 +86,7 @@ while True:
     mesa.girar(DELTA_DISTANCIA,-1)
     configuracoes['sensor_A']['verde'] = sc.leituraMaxMin(sc.sensor_A, amostras, timeout) 
     shared.set("Progresso", "4")
-        
+    '''
     
     #Pegando dados das pecas no sensor B
     configuracoes['sensor_B'] = {}
@@ -90,7 +104,7 @@ while True:
     
     mesa.girar_para(mesa.Posicoes.Inicial)
     shared.set("Progresso", "0")
-    
+    '''
     # Salvando Dados
     with open("constantes_cor.json", 'w') as f:
         json.dump(configuracoes, f)
