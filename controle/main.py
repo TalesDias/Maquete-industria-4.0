@@ -78,6 +78,7 @@ def log_file(msg):
     
 def executar():
     defeito = False
+    sc.atualizar_constantes()
     mesa.setup()
     braco.setup()
     braco.executar(braco.Movimentos.Mesa)
@@ -100,7 +101,30 @@ def executar():
         if (not cg.ativado()): return 2
         
         mesa.girar_para(mesa.Posicoes.Sensor_A)
-        cor = sc.cor(sc.sensor_A)
+                
+        tentativas = 0
+        cor = None
+        while (cor == None and tentativas < 3):
+            tentativas +=1
+            cor = sc.cor(sc.sensor_A)
+        
+        #caso no consiga identificar a cor
+        if (tentativas == 3):
+            for i in range(20):
+                led_rgb.alternar(led_rgb.LED_B)
+                sleep(0.2)
+                led_rgb.alternar(led_rgb.LED_A)
+                sleep(0.2)
+                
+            mesa.girar_para(mesa.Posicoes.Inicial)
+        
+            for i in range(20):
+                led_rgb.alternar(led_rgb.LED_B)
+                sleep(0.2)
+                led_rgb.alternar(led_rgb.LED_A)
+                sleep(0.2)
+            return 2
+        
         
         # verificando se existe uma parada de emergencia 
         if (not cg.ativado()): return 2
@@ -128,7 +152,30 @@ def executar():
         if (not cg.ativado()): return 2
 
         mesa.girar_para(mesa.Posicoes.Sensor_B)
-        cor = sc.cor(sc.sensor_B)
+        
+        tentativas = 0
+        cor = None
+        while (cor == None and tentativas < 3):
+            tentativas +=1
+            cor = sc.cor(sc.sensor_B)
+        
+        #caso no consiga identificar a cor
+        if (tentativas == 3):
+            for i in range(20):
+                led_rgb.alternar(led_rgb.LED_B)
+                sleep(0.2)
+                led_rgb.alternar(led_rgb.LED_A)
+                sleep(0.2)
+                
+            mesa.girar_para(mesa.Posicoes.Inicial)
+        
+            for i in range(20):
+                led_rgb.alternar(led_rgb.LED_B)
+                sleep(0.2)
+                led_rgb.alternar(led_rgb.LED_A)
+                sleep(0.2)
+                
+            return 2
         
         # verificando se existe uma parada de emergencia 
         if (not cg.ativado()): return 2
