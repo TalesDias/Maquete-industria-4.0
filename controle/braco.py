@@ -24,7 +24,7 @@ def arange(x, y, jump):
 
 
 class Servo:
-    def __init__(self, porta, posInicial,velocidade):
+    def __init__(self, porta, posInicial, velocidade):
         self.porta = porta
         self.pos = posInicial
         self.velocidade = velocidade
@@ -66,7 +66,7 @@ class Servo:
 
 #Declarando os servos motores
 garra = Servo(5, 180, 10)
-base = Servo(19, 110, 2)
+base = Servo(19, 110, 5)
 ext = Servo(13, 40, 1)
 altura = Servo(6, 80, 1)
 
@@ -99,7 +99,7 @@ def executar(mov):
         
         altura(65)
         
-        ext(110)
+        ext(105)
         
         garra(180) # Pega a Peca
         
@@ -121,27 +121,31 @@ def executar(mov):
         
         garra(150)
         
+        ext(70)
+        
+        altura(75)
+        
         ext(40)
         
         
     elif(mov == Movimentos.Concluido):
-        ext(70)
-        
-        altura(50)
+        ext(60)
         
         garra(130)
         
-        ext(105)
+        altura(50)
+        
+        ext(100)
         
         garra(180) # Pega a Peca
         
-        ext(50)
+        ext(70)
         
         altura(70)
         
-        ext(40)
+        ext(60)
         
-        altura(90)
+        altura(110)
         
         base(165)
         
@@ -151,11 +155,11 @@ def executar(mov):
         
         
     elif(mov == Movimentos.Descarte):
-        ext(70)
-        
-        altura(50)
+        ext(60)
         
         garra(130)
+        
+        altura(50)
         
         ext(105)
         
@@ -169,15 +173,15 @@ def executar(mov):
         
         altura(90)
         
-        base(40)
+        base(20)
         
-        ext(80)
-        
-        altura(70)
+        ext(90)
         
         garra(130)
             
     else:
         raise TypeError("Use apenas movimentos validos")
+    
     sleep(1)
     setup()
+

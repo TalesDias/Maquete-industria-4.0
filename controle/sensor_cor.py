@@ -70,7 +70,7 @@ def valor(sensor, filtro = Filtro.Sem_Filtro):
 def cor(sensor):
     time.sleep(0.1)
     GPIO.output(sensor["led"], True)
-    RESOLUCAO = 200
+    RESOLUCAO = 300
     vm = int(sum([valor(sensor, Filtro.Vermelho) for i in range(RESOLUCAO)])/RESOLUCAO)
     vd = int(sum([valor(sensor, Filtro.Verde) for i in range(RESOLUCAO)])/RESOLUCAO)
     az = int(sum([valor(sensor, Filtro.Azul) for i in range(RESOLUCAO)])/RESOLUCAO)
@@ -130,9 +130,9 @@ def cor(sensor):
             return None
 
 def leituraMaxMin(sensor, amostras, timeout):
-    time.sleep(0.1)
+    time.sleep(0.5)
     GPIO.output(sensor["led"], True)
-    RESOLUCAO = 250
+    RESOLUCAO = 300
     
     start = time.time()
     
@@ -188,6 +188,6 @@ def leituraMaxMin(sensor, amostras, timeout):
 #essa funcao tem propositos de teste apenas
 def sense():
     for i in range(900):
-        c = cor(sensor_A)
+        c = cor(sensor_B)
         print(str(i), c, sep='\t')
 #sense()
