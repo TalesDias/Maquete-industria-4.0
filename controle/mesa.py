@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 from time import sleep
 import enum
+import braco
 
 GPIO.setmode(GPIO.BOARD)
 STEP = 16
@@ -19,16 +20,17 @@ GPIO.output(15, False)
 
 class Posicoes(enum.Enum):
     Inicial  = 0
-    Led_A    = 28
+    Led_A    = 29
     Sensor_A = 76
-    Led_B    = 126
-    Sensor_B = 178
+    Led_B    = 125
+    Sensor_B = 173
 
 VELOCIDADE = 0.018
-PASSOS_POR_REV = 206
+PASSOS_POR_REV = 200
 
 pos_atual = None
-
+#kappa e uma constante de erro que permite ajustar levemente a posicao da mesa
+kappa = 0
 
 def setup():
     global pos_atual
@@ -36,7 +38,6 @@ def setup():
 
 
 def sign(num): return 1 if num >= 0 else -1
-
 
 def girar(passos, direcao):
     direcao = - direcao
@@ -51,9 +52,13 @@ def girar(passos, direcao):
         GPIO.output(STEP, False)
         sleep(VELOCIDADE)
 
+
 def girar_para(pos):
     global pos_atual
-    delta = pos.value - pos_atual.value
+    global kappa
+    
+    delta = pos.value - pos_atual.value - kappa
+    kappa = 0
     
     if (abs(delta) > (PASSOS_POR_REV/2)):
         delta = delta + PASSOS_POR_REV*sign(-delta)
@@ -64,15 +69,44 @@ def girar_para(pos):
         girar(abs(delta), -1)
     pos_atual = pos
     
-def teste():
-    setup()
-    girar_para(Posicoes.Led_A)
-    sleep(3)
-    girar_para(Posicoes.Sensor_A)
-    sleep(3)
-    girar_para(Posicoes.Led_B)
-    sleep(3)
-    girar_para(Posicoes.Sensor_B)
-    sleep(3)
-    girar_para(Posicoes.Inicial)
+def girar_para_ponderado(pos, K):
+    global pos_atual
+    global kappa
     
+    kappa = K
+    delta = pos.value - pos_atual.value + kappa
+    
+    if (abs(delta) > (PASSOS_POR_REV/2)):
+        delta = delta + PASSOS_POR_REV*sign(-delta)
+
+    if(delta > 0):
+        girar(abs(delta), 1)
+    else:
+        girar(abs(delta), -1)
+    pos_atual = pos
+
+def proximo_kappa():
+    global kappa 
+    girar(1, 1)
+    kappa += 1
+
+def anterior_kappa():
+    global kappa
+    girar(1, -1)
+    kappa -= 1
+    
+
+def rotina_teste():
+    for i in range(200):
+        braco.setup()
+        braco.executar(braco.Movimentos.Mesa)
+        setup()
+        girar_para(Posicoes.Led_A)
+        sleep(3)
+        girar_para(Posicoes.Sensor_A)
+        sleep(6)
+        girar_para(Posicoes.Led_B)
+        sleep(3)
+        girar_para(Posicoes.Sensor_B)
+        sleep(6)
+        girar_para(Posicoes.Inicial)

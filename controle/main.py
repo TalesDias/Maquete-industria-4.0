@@ -94,22 +94,23 @@ def executar():
         mesa.girar_para(mesa.Posicoes.Led_A)
         #led_rgb.gradiente(led_rgb.AMARELO, led_rgb.VERMELHO, led_rgb. LEDA)
         led_rgb.alternar(led_rgb.LED_A)
-        sleep(4)
+        sleep(6)
         led_rgb.alternar(led_rgb.LED_A)
         
         # verificando se existe uma parada de emergencia 
         if (not cg.ativado()): return 2
         
-        mesa.girar_para(mesa.Posicoes.Sensor_A)
+        mesa.girar_para_ponderado(mesa.Posicoes.Sensor_A, -4)
                 
         tentativas = 0
         cor = None
-        while (cor == None and tentativas < 3):
-            tentativas +=1
+        while (cor == None and tentativas < 9):
             cor = sc.cor(sc.sensor_A)
-        
+            tentativas += 1
+            mesa.proximo_kappa()
+            
         #caso no consiga identificar a cor
-        if (tentativas == 3):
+        if (tentativas == 9):
             for i in range(20):
                 led_rgb.alternar(led_rgb.LED_B)
                 sleep(0.2)
@@ -136,7 +137,7 @@ def executar():
             mesa.girar_para(mesa.Posicoes.Inicial)
             braco.executar(braco.Movimentos.Descarte)
             return 2
-        
+            
     cor = None
     while(cor != sc.Cor.Verde):
         # verificando se existe uma parada de emergencia 
@@ -145,22 +146,23 @@ def executar():
         mesa.girar_para(mesa.Posicoes.Led_B)
         #led_rgb.gradiente(led_rgb.AMARELO, led_rgb.VERMELHO, led_rgb.LEDB)
         led_rgb.alternar(led_rgb.LED_B)
-        sleep(4)
+        sleep(6)
         led_rgb.alternar(led_rgb.LED_B)
 
         # verificando se existe uma parada de emergencia 
         if (not cg.ativado()): return 2
 
-        mesa.girar_para(mesa.Posicoes.Sensor_B)
+        mesa.girar_para_ponderado(mesa.Posicoes.Sensor_B, -4)
         
         tentativas = 0
         cor = None
-        while (cor == None and tentativas < 3):
-            tentativas +=1
+        while (cor == None and tentativas < 9):
             cor = sc.cor(sc.sensor_B)
+            mesa.proximo_kappa()
+            tentativas += 1
         
         #caso no consiga identificar a cor
-        if (tentativas == 3):
+        if (tentativas == 9):
             for i in range(20):
                 led_rgb.alternar(led_rgb.LED_B)
                 sleep(0.2)
@@ -214,7 +216,6 @@ def loop():
     global pc_tot
     
     while True:
-        
         if(Estados[shared.get("Estado")] == Estados.Calibracao):
             if(estado != Estados.Calibracao):
                 estado = Estados.Calibracao
@@ -239,14 +240,18 @@ def loop():
             if(estado != Estados.Manutencao):
                 estado = Estados.Manutencao
                 atualizar_estado()
+            sleep(1)
             continue
         
         if (not (sr.presente() and cg.ativado())):
             if(estado != Estados.Inativo):
                 estado = Estados.Inativo
                 atualizar_estado()
-                
-            shared.set("Estado", estado.name)
+            
+            #garante que o estado nao mudou antes de o atualizar 
+            sleep(1)
+            if(not (Estados[shared.get("Estado")] == Estados.Manutencao or Estados[shared.get("Estado")] == Estados.Calibracao)):
+                shared.set("Estado", estado.name)
             continue
         
         
@@ -259,6 +264,8 @@ def loop():
         
         resultado = executar()
         txt = ""
+        
+        print("resultado: ",resultado)
         
         if(resultado == 1):
             pc_retr += 1
