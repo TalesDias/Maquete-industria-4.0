@@ -190,7 +190,7 @@ def parada():
                 linha = str(datetime.now())
                 linha += " @ "
                 linha += apelido
-                linha += "-> Requisitou parada de retomada\n"
+                linha += "-> Requisitou retomada de execucao\n"
                 log_to_file(linha)
 
             else:
@@ -218,7 +218,7 @@ def settime():
     if cargo is None or momento_text is None:
         return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
-    if cargo != "sudo":
+    if cargo != "administrador":
         return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
     momento = datetime.strptime(momento_text, "%d/%m/%Y %H:%M:%S")
@@ -256,7 +256,7 @@ def calibracaocor():
     if cargo is None or modo is None:
         return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
-    if cargo != "sudo":
+    if cargo != "administrador":
         return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
     shared.set("Modo", modo)
@@ -294,7 +294,7 @@ def modatividade():
     if cargo is None or porcentagem is None or duracao is None:
         return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
-    if cargo != "sudo":
+    if cargo != "administrador":
         return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
     
     
@@ -340,7 +340,7 @@ def modhistoricopecas():
     if cargo is None or historico is None or concluidas is None or retrabalhadas is None or refugadas is None:
         return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
-    if cargo != "sudo":
+    if cargo != "administrador":
         return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
     
     concluidas    = int(concluidas)
