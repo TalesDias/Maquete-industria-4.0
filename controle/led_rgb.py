@@ -25,6 +25,9 @@ def ligar(led):
 
 
 '''
+drive foi queimado
+logo não usamos mais o codigo abaixo
+
 import smbus,time
 
 bus = smbus.SMBus(1)
