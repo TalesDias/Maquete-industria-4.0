@@ -1,193 +1,65 @@
-import RPi.GPIO as GPIO
-import time, enum, json
+# Essa classe funciona apenas como um Wrapper
+# do RFID. O que faz sentido pois o sensor
+# RFID simularia um sensor de cor.
 
-class Filtro(enum.Enum):
-    Verde    = 1
+from mfrc522 import SimpleMFRC522 as SM
+import RPi.GPIO as G
+from enum import Enum
+from time import sleep
+import json
+
+
+
+class Cor(Enum):
+    Verde    = 0
+    Amarelo  = 1
     Vermelho = 2
-    Azul     = 3
-    Sem_Filtro  = 4
     
-class Cor(enum.Enum):
-    Verde    = 1
-    Vermelho = 2
-    Amarelo  = 3
-    
+sensor_A = 0 #CE0
+sensor_B = 1 #CE1
+led_A = 32
+led_B = 36
+
+G.setmode(G.BOARD)
+G.setup(led_A, G.OUT)
+G.output(led_A, False)
+G.setup(led_B, G.OUT)
+G.output(led_B, False)
+
+mapeamento = None
+with open('mapeamento_tag_cor.json','r') as fp:
+   mapeamento = json.load(fp) 
 
 
-NUM_CYCLES = 100
-
-sensor_A = {"s2": 21, "s3": 19, "sinal": 23, 'led': 36}
-sensor_B = {"s2": 26, "s3": 22, "sinal": 24, 'led': 32}
-
-GPIO.setmode(GPIO.BOARD)
-GPIO.setwarnings(False) 
-GPIO.setup(sensor_A["sinal"], GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(sensor_A["s2"], GPIO.OUT)
-GPIO.setup(sensor_A["s3"], GPIO.OUT)
-GPIO.setup(sensor_A["led"], GPIO.OUT)
-GPIO.output(sensor_A["led"], False)
-GPIO.setup(sensor_B["sinal"], GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(sensor_B["s2"], GPIO.OUT)
-GPIO.setup(sensor_B["s3"], GPIO.OUT)
-GPIO.setup(sensor_B["led"], GPIO.OUT)
-GPIO.output(sensor_B["led"], False)
-
-
-constantes = None
-def atualizar_constantes():
-    global constantes
-    with open('constantes_cor.json','r') as fp:
-        constantes = json.load(fp)
-        
-atualizar_constantes()    
-
-def valor(sensor, filtro = Filtro.Sem_Filtro):
-    
-    if(filtro == Filtro.Vermelho):
-        GPIO.output(sensor["s2"], GPIO.LOW)
-        GPIO.output(sensor["s3"], GPIO.LOW)
-        
-    elif(filtro == Filtro.Verde):
-        GPIO.output(sensor["s2"],GPIO.LOW)
-        GPIO.output(sensor["s3"],GPIO.HIGH)
-    
-    elif(filtro == Filtro.Azul):
-        GPIO.output(sensor["s2"],GPIO.HIGH)
-        GPIO.output(sensor["s3"],GPIO.HIGH)
-        
-    elif(filtro == Filtro.Sem_Filtro):
-        GPIO.output(sensor["s2"],GPIO.HIGH)
-        GPIO.output(sensor["s3"],GPIO.LOW)
-    
-    start = time.time()
-    for impulse_count in range(NUM_CYCLES):
-        GPIO.wait_for_edge(sensor["sinal"], GPIO.FALLING)
-    
-    duration = time.time() - start      #seconds to run for loop
-    
-    return(NUM_CYCLES / duration)   #in Hz
+# Todo: Verificar a necessidade de colocar um try-catch na leitura
 
 def cor(sensor):
-    time.sleep(0.1)
-    GPIO.output(sensor["led"], True)
-    RESOLUCAO = 300
-    vm = int(sum([valor(sensor, Filtro.Vermelho) for i in range(RESOLUCAO)])/RESOLUCAO)
-    vd = int(sum([valor(sensor, Filtro.Verde) for i in range(RESOLUCAO)])/RESOLUCAO)
-    az = int(sum([valor(sensor, Filtro.Azul) for i in range(RESOLUCAO)])/RESOLUCAO)
-    sf = int(sum([valor(sensor, Filtro.Sem_Filtro) for i in range(RESOLUCAO)])/RESOLUCAO)
-    print(vm, vd, az, sf, sep='\t')
-    GPIO.output(sensor["led"], False)
-
-    if(sensor == sensor_A):
+    leitor = SM(bus=0,device=sensor)
+    limite = 10
+    ligar_led(sensor)
+    sleep(2) # da a sensação de que algum trabalho foi feito 
+   
+    while limite > 0:
+        limite -= 1
+        id = str(leitor.read_id())
+        if(id in mapeamento):
+            desligar_led(sensor)
+            return Cor(mapeamento[id])
         
-        if(vm < constantes['sensor_A']['vermelho']['vmMax'] and vm > constantes['sensor_A']['vermelho']['vmMin'] and
-           vd < constantes['sensor_A']['vermelho']['vdMax'] and vd > constantes['sensor_A']['vermelho']['vdMin'] and
-           az < constantes['sensor_A']['vermelho']['azMax'] and az > constantes['sensor_A']['vermelho']['azMin'] and
-           sf < constantes['sensor_A']['vermelho']['sfMax'] and sf > constantes['sensor_A']['vermelho']['sfMin']):
-           
-           return Cor.Vermelho
-        
-        elif(vm < constantes['sensor_A']['amarelo']['vmMax'] and vm > constantes['sensor_A']['amarelo']['vmMin'] and
-           vd < constantes['sensor_A']['amarelo']['vdMax'] and vd > constantes['sensor_A']['amarelo']['vdMin'] and
-           az < constantes['sensor_A']['amarelo']['azMax'] and az > constantes['sensor_A']['amarelo']['azMin'] and
-           sf < constantes['sensor_A']['amarelo']['sfMax'] and sf > constantes['sensor_A']['amarelo']['sfMin']):
-           
-           return Cor.Amarelo
-        
-        elif(vm < constantes['sensor_A']['verde']['vmMax'] and vm > constantes['sensor_A']['verde']['vmMin'] and
-           vd < constantes['sensor_A']['verde']['vdMax'] and vd > constantes['sensor_A']['verde']['vdMin'] and
-           az < constantes['sensor_A']['verde']['azMax'] and az > constantes['sensor_A']['verde']['azMin'] and
-           sf < constantes['sensor_A']['verde']['sfMax'] and sf > constantes['sensor_A']['verde']['sfMin']):
-           
-           return Cor.Verde
-                
-        else:
-            return None
-        
-    if(sensor == sensor_B):
-        if(vm < constantes['sensor_B']['vermelho']['vmMax'] and vm > constantes['sensor_B']['vermelho']['vmMin'] and
-           vd < constantes['sensor_B']['vermelho']['vdMax'] and vd > constantes['sensor_B']['vermelho']['vdMin'] and
-           az < constantes['sensor_B']['vermelho']['azMax'] and az > constantes['sensor_B']['vermelho']['azMin'] and
-           sf < constantes['sensor_B']['vermelho']['sfMax'] and sf > constantes['sensor_B']['vermelho']['sfMin']):
-           
-           return Cor.Vermelho
-        
-        elif(vm < constantes['sensor_B']['amarelo']['vmMax'] and vm > constantes['sensor_B']['amarelo']['vmMin'] and
-           vd < constantes['sensor_B']['amarelo']['vdMax'] and vd > constantes['sensor_B']['amarelo']['vdMin'] and
-           az < constantes['sensor_B']['amarelo']['azMax'] and az > constantes['sensor_B']['amarelo']['azMin'] and
-           sf < constantes['sensor_B']['amarelo']['sfMax'] and sf > constantes['sensor_B']['amarelo']['sfMin']):
-           
-           return Cor.Amarelo
-        
-        elif(vm < constantes['sensor_B']['verde']['vmMax'] and vm > constantes['sensor_B']['verde']['vmMin'] and
-           vd < constantes['sensor_B']['verde']['vdMax'] and vd > constantes['sensor_B']['verde']['vdMin'] and
-           az < constantes['sensor_B']['verde']['azMax'] and az > constantes['sensor_B']['verde']['azMin'] and
-           sf < constantes['sensor_B']['verde']['sfMax'] and sf > constantes['sensor_B']['verde']['sfMin']):
-           
-           return Cor.Verde
-                
-        else:
-            return None
-
-def leituraMaxMin(sensor, amostras, timeout):
-    time.sleep(0.5)
-    GPIO.output(sensor["led"], True)
-    RESOLUCAO = 300
     
-    start = time.time()
-    
-    vmMax = int(sum([valor(sensor, Filtro.Vermelho) for i in range(RESOLUCAO)])/RESOLUCAO)
-    vmMin = vmMax
-    vdMax = int(sum([valor(sensor, Filtro.Verde) for i in range(RESOLUCAO)])/RESOLUCAO)
-    vdMin = vmMax
-    azMax = int(sum([valor(sensor, Filtro.Azul) for i in range(RESOLUCAO)])/RESOLUCAO)
-    azMin = azMax
-    sfMax = int(sum([valor(sensor, Filtro.Sem_Filtro) for i in range(RESOLUCAO)])/RESOLUCAO)
-    sfMin = sfMax
+    desligar_led(sensor)    
+    #Caso o sensor não reconheca, retorna como padrão vermelho
+    return Cor.Vermelho
 
-    for j in range(amostras):
-        vm = int(sum([valor(sensor, Filtro.Vermelho) for i in range(RESOLUCAO)])/RESOLUCAO)
-        vd = int(sum([valor(sensor, Filtro.Verde) for i in range(RESOLUCAO)])/RESOLUCAO)
-        az = int(sum([valor(sensor, Filtro.Azul) for i in range(RESOLUCAO)])/RESOLUCAO)
-        sf = int(sum([valor(sensor, Filtro.Sem_Filtro) for i in range(RESOLUCAO)])/RESOLUCAO)
-        print(str(j) +" =>" ,vm, vd, az, sf, sep='\t')
-        
-        if(vm > vmMax): vmMax = vm
-        elif(vm < vmMin): vmMin = vm
-        if(vd > vdMax): vdMax = vd
-        elif(vd < vdMin): vdMin = vd
-        if(az > azMax): azMax = az
-        elif(az < azMin): azMin = az
-        if(sf > sfMax): sfMax = sf
-        elif(sf < sfMin): sfMin = sf
-        
-        delta = time.time() - start
-        if (delta > timeout): break
     
-    vmDelta = max(vmMax - vmMin, 3000)
-    vmMax += int(vmDelta)
-    vmMin -= int(vmDelta)
-        
-    vdDelta = max(vdMax - vdMin, 3000)
-    vdMax += int(vdDelta)
-    vdMin -= int(vdDelta)
+def ligar_led(sensor):
+    if sensor == sensor_A:
+        G.output(led_A, True)
+    else:
+        G.output(led_B,True)
 
-    azDelta = max(azMax - azMin, 3000)
-    azMax += int(azDelta)
-    azMin -= int(azDelta)
-        
-    sfDelta = max(sfMax - sfMin, 3000)
-    sfMax += int(sfDelta)
-    sfMin -= int(sfDelta)
-    
-    GPIO.output(sensor["led"], False)
-    
-    return {"vmMax":vmMax, "vmMin":vmMin, "vdMax":vdMax, "vdMin":vdMin, "azMax":azMax, "azMin":azMin, "sfMax":sfMax, "sfMin":sfMin}
-
-
-#essa funcao tem propositos de teste apenas
-def sense():
-    for i in range(900):
-        c = cor(sensor_B)
-        print(str(i), c, sep='\t')
-#sense()
+def desligar_led(sensor):
+    if sensor == sensor_A:
+        G.output(led_A, False)
+    else:
+        G.output(led_B, False)

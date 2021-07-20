@@ -78,7 +78,6 @@ def log_file(msg):
     
 def executar():
     defeito = False
-    sc.atualizar_constantes()
     mesa.setup()
     braco.setup()
     braco.executar(braco.Movimentos.Mesa)
