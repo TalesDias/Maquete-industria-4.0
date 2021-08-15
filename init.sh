@@ -1,22 +1,29 @@
 #!/bin/bash
 
-echo "Iniciando o pigpio daemon"
-pigpiod
+su pi <<'EOF'
 
-cd "Desktop/Maquete-industria-4.0"
-echo "Iniciando a Maquete"
-date
+cd "/home/pi/Desktop/Maquete-industria-4.0"
+sudo pigpiod
+tmux new -d -s core
+tmux split-window -v
+tmux split-window -h
 
-cd /home/pi/Desktop/Maquete-industria-4.0/website
-sudo /usr/bin/python3 serve.py &
+pyPath=/usr/bin/python3
 
-cd ../controle
-/usr/bin/python3 main.py &
-/usr/bin/python3 config_cor.py &
+#iniciando o website
+tmux send "cd website" ENTER 
+tmux send "sudo $pyPath serve.py" ENTER 
 
-cd ../servidor
-source bin/activate
-./bin/uwsgi --http :5000 --wsgi-file app.py --callable app
+#iniciando o controle 
+tmux select-pane -t 1
+tmux send "cd controle" ENTER
+tmux send "sudo $pyPath main.py" ENTER
 
-deactivate
+#iniciando o servidor
+tmux select-pane -t 0
+tmux send "cd servidor" ENTER
+tmux send "source bin/activate" ENTER
+tmux send "sudo ./bin/uwsgi --http :5000 --wsgi-file app.py --callable app" ENTER
+tmux send "deactivate" ENTER
 
+EOF
