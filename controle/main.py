@@ -13,12 +13,10 @@ class Estados (enum.Enum):
     Ativo      = 3
     Manutencao = 4
     Invalido   = 5
-    Calibracao = 6
 
 shared = None
 estado = None
 conn   = None
-
 pc_conc = None
 pc_retr = None
 pc_refu = None
@@ -215,13 +213,14 @@ def loop():
     global pc_tot
     
     while True:
-        if(Estados[shared.get("Estado")] == Estados.Calibracao):
-            if(estado != Estados.Calibracao):
-                estado = Estados.Calibracao
+        
+        if(Estados[shared.get("Estado")] == Estados.Manutencao):
+            if(estado != Estados.Manutencao):
+                estado = Estados.Manutencao
                 atualizar_estado()
             sleep(1)
             continue
-        
+       
         if (not cg.ativado()):
             if(estado != Estados.Emergencia):
                 estado = Estados.Emergencia
@@ -235,13 +234,6 @@ def loop():
             led_status.ligar()
             sleep(0.5)
         
-        if(Estados[shared.get("Estado")] == Estados.Manutencao):
-            if(estado != Estados.Manutencao):
-                estado = Estados.Manutencao
-                atualizar_estado()
-            sleep(1)
-            continue
-        
         if (not (sr.presente() and cg.ativado())):
             if(estado != Estados.Inativo):
                 estado = Estados.Inativo
@@ -249,7 +241,7 @@ def loop():
             
             #garante que o estado nao mudou antes de o atualizar 
             sleep(1)
-            if(not (Estados[shared.get("Estado")] == Estados.Manutencao or Estados[shared.get("Estado")] == Estados.Calibracao)):
+            if(not Estados[shared.get("Estado")] == Estados.Manutencao):
                 shared.set("Estado", estado.name)
             continue
         

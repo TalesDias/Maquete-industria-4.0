@@ -1,6 +1,5 @@
+import {base_addr, server_addr} from './consts.js';
 let req  = new XMLHttpRequest()
-let base_addr = "http://192.168.1.9:80"
-let server_addr = "http://192.168.1.9:5000"
 
 $(document).ready(function (){
 

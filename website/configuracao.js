@@ -1,8 +1,11 @@
-const base_addr = "http://192.168.0.109:80"
-const server_addr = "http://192.168.0.109:5000"
+import {base_addr, server_addr} from './consts.js';
 
 $(document).ready( () => {
-	sessionStorage.cargo = "sudo";
+
+	$("#login").remove();
+	if (sessionStorage.cargo !== "administrador"){
+		window.location.assign(base_addr);
+	}
 
 	// Controla label do slider duracao
     $("#atividade_duracao").on("input", (ev) => {
@@ -95,11 +98,6 @@ $(document).ready( () => {
     },1000)
 
 
-	//Inicia a Calibracao dos sensores
-	$("#calibracao_rapida").click(_ => calibrar("Rapido"))
-	$("#calibracao_regular").click(_ => calibrar("Moderado"))
-	$("#calibracao_precisa").click(_ => calibrar("Lento"))
-
 	// Envia os Dados necessarios
 	$("#salvar_dados").click( _ => {
 		
@@ -154,71 +152,6 @@ $(document).ready( () => {
         
     });
 });
-
-
-function calibrar(modo){
-    let req  = new XMLHttpRequest()
-	const cargo = sessionStorage.cargo
-    const params =  JSON.stringify({
-        cargo,
-        modo
-    })
-
-    req.open('POST', server_addr+'/calibracaocor')
-    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    req.onload = () => {
-			if(req.status !== 200){
-				alert("Erro ao tentar Calibrar o sensor");
-			}
-			else {
-				controlaProgressoCalibracao(false)
-			}
-		}
-    
-    req.send(params)
-    
-    return req;
-}
-
-function controlaProgressoCalibracao(){
-	let estadoAtual = 0;
-	let flagIniciado = false;
-	const barra  = $("#progresso_calibracao")[0];
-	const label  = $("#label_progresso_calibracao")[0];
-
-	const rotinaVerificacao = () => {
-		let req  = new XMLHttpRequest()
-		req.open('GET', server_addr+'/configprogresso');
-		req.onload = function () {
-		    const data = JSON.parse(req.responseText);
-			data.progresso = parseInt(data.progresso);
-
-			if(data.progresso !== estadoAtual){
-				flagIniciado = true;
-				estadoAtual = data.progresso;
-				let porcentagem = null;
-				if (estadoAtual === 7){
-					porcentagem = 100;
-				}
-				else if(estadoAtual === 0){
-				porcentagem = 0
-				}
-				else {
-					porcentagem = parseInt((estadoAtual-1)/6*100);
-				}
-				barra.value = porcentagem;
-				label.innerText = "Progresso: "+porcentagem+"%"
-			}
-		}
-		req.send();
-
-		if(estadoAtual !== 0 && flagIniciado){
-			clearInterval(rotinaVerificacao);	
-		}
-	}
-	setInterval(rotinaVerificacao, 500);
-}
-
 
 function enviarMomento(momento){
     let req  = new XMLHttpRequest()

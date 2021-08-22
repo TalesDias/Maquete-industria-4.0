@@ -176,25 +176,24 @@ def parada():
     if apelido is None or tipo is None:
         return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
-        if(Estados[shared.get("Estado")] != "Calibracao"):
-            if tipo == "manutencao":
-                shared.set("Estado", "Manutencao")
-                linha = str(datetime.now())
-                linha += " @ "
-                linha += apelido
-                linha += "-> Requisitou parada de manutencao\n"
-                log_to_file(linha)
+    if tipo == "manutencao":
+        shared.set("Estado", "Manutencao")
+        linha = str(datetime.now())
+        linha += " @ "
+        linha += apelido
+        linha += "-> Requisitou parada de manutencao\n"
+        log_to_file(linha)
 
-            elif tipo == "retomada":
-                shared.set("Estado", "Inativo")
-                linha = str(datetime.now())
-                linha += " @ "
-                linha += apelido
-                linha += "-> Requisitou retomada de execucao\n"
-                log_to_file(linha)
+    elif tipo == "retomada":
+        shared.set("Estado", "Inativo")
+        linha = str(datetime.now())
+        linha += " @ "
+        linha += apelido
+        linha += "-> Requisitou retomada de execucao\n"
+        log_to_file(linha)
 
-            else:
-                return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
+    else:
+        return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
     return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
@@ -233,45 +232,6 @@ def settime():
     
 
     return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
-
-
-
-
-
-@app.route('/calibracaocor', methods=['OPTIONS'])
-def calibracaocorOP():
-    return {}, 200, {
-            "Content-Type" : "text/html; charset=utf-8",
-            "Allow" : "OPTIONS,POST",
-            "Access-Control-Allow-Origin" : "*",
-            "Access-Control-Allow-Headers" : "*"
-        }
-
-@app.route('/calibracaocor', methods=['POST'])
-def calibracaocor():
-    global shared
-    cargo = request.json.get('cargo')
-    modo = request.json.get('modo')
-
-    if cargo is None or modo is None:
-        return {}, 400, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
-
-    if cargo != "administrador":
-        return {}, 401, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
-
-    shared.set("Modo", modo)
-    shared.set("Estado", "Calibracao")    
-
-    return {},200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
-
-
-@app.route('/configprogresso', methods=['GET'])
-def configprogresso():
-    global shared
-    
-    return {
-        "progresso": shared.get("Progresso")
-    }, 200, {"Access-Control-Allow-Origin" : "*", "Access-Control-Allow-Headers" : "*"}
 
 
 

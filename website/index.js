@@ -1,16 +1,25 @@
-const base_addr = "http://192.168.0.109:80"
-const server_addr = "http://192.168.0.109:5000"
+import {base_addr, server_addr} from './consts.js';
 
 $(document).ready(function (){
 
     if (sessionStorage.apelido){
         let login = $("#login")
         login.after("<span class=\"navbar_link\" id=\"logout\">Sair ("+sessionStorage.apelido +")</span>")
+	
+console.log(sessionStorage.apelido)
+	if (sessionStorage.cargo === "administrador"){
+		login.after("<span class=\"navbar_link\" id=\"configuracao\">Configurações</span>")		
+	}
+	
         login.remove()
     }
 
     $("#logout").click(function (){
         logout()
+    })    
+
+	$("#configuracao").click(function (){
+       	window.location.assign(base_addr + "/configuracao.html")
     })
 
     $("#btn_manutencao").click(function (){
@@ -63,6 +72,7 @@ function logout(){
     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     req.onload = function () {
         sessionStorage.removeItem('apelido')
+        sessionStorage.removeItem('cargo')
         $(window).attr("location", base_addr)
     }
     req.send(params)
@@ -313,14 +323,13 @@ function preencherBarrasPecas(pecasMes){
 
 
     // Public properties and methods
-
-    this.width = 300;
-    this.height = 150;
-    this.maxValue;
-    this.margin = 5;
-    this.colors = ["purple", "red", "green", "yellow"];
-    this.curArr = data;
-    this.animationSteps = 10;
+    let width = 300;
+    let height = 150;
+    let maxValue;
+    let margin = 5;
+    let colors = ["purple", "red", "green", "yellow"];
+    let curArr = data;
+    let animationSteps = 10;
 
     let numOfBars = data.length;
     let barWidth;
@@ -329,15 +338,15 @@ function preencherBarrasPecas(pecasMes){
     let ratio;
     let maxBarHeight;
     let gradient;
-    let graphAreaWidth = this.width;
-    let graphAreaHeight = this.height;
+    let graphAreaWidth = width;
+    let graphAreaHeight = height;
     let i;
 
 
 
 
     // Calcula as Dimensões
-    barWidth = graphAreaWidth / numOfBars - this.margin * 2;
+    barWidth = graphAreaWidth / numOfBars - margin * 2;
     maxBarHeight = graphAreaHeight - 25;
 
 
@@ -351,8 +360,8 @@ function preencherBarrasPecas(pecasMes){
 
     for (i = 0; i < data.length; i += 1) {
         // Set the ratio of current bar compared to the maximum
-        if (this.maxValue) {
-            ratio = data[i].quantidade / this.maxValue;
+        if (maxValue) {
+            ratio = data[i].quantidade / maxValue;
         } else {
             ratio = data[i].quantidade / largestValue;
         }
@@ -367,7 +376,7 @@ function preencherBarrasPecas(pecasMes){
 
         // Draw bar background
         ctx.fillStyle = "#333";
-        ctx.fillRect(this.margin + i * this.width / numOfBars,
+        ctx.fillRect(margin + i * width / numOfBars,
             graphAreaHeight - barHeight,
             barWidth,
             barHeight);
@@ -381,12 +390,12 @@ function preencherBarrasPecas(pecasMes){
         if (barHeight > border * 2) {
             // Create gradient
             gradient = ctx.createLinearGradient(0, 0, 0, graphAreaHeight);
-            gradient.addColorStop(1-ratio, this.colors[i % this.colors.length]);
+            gradient.addColorStop(1-ratio, colors[i % colors.length]);
             gradient.addColorStop(1, "#ffffff");
 
             ctx.fillStyle = gradient;
             // Fill rectangle with gradient
-            ctx.fillRect(this.margin + i * this.width / numOfBars + border,
+            ctx.fillRect(margin + i * width / numOfBars + border,
                 graphAreaHeight - barHeight + border,
                 barWidth - border * 2,
                 barHeight - border * 2);
@@ -399,7 +408,7 @@ function preencherBarrasPecas(pecasMes){
         // Use try / catch to stop IE 8 from going to error town
         try {
             ctx.fillText(parseInt(data[i].quantidade-1,10),
-                i * this.width / numOfBars + (this.width / numOfBars) / 2,
+                i * width / numOfBars + (width / numOfBars) / 2,
                 graphAreaHeight - barHeight - 10);
         } catch (ex) {}
         // Draw bar label if it exists
@@ -410,8 +419,8 @@ function preencherBarrasPecas(pecasMes){
             ctx.textAlign = "center";
             try{
                 ctx.fillText(data[i].nome,
-                    i * this.width / numOfBars + (this.width / numOfBars) / 2,
-                    this.height - 10);
+                    i * width / numOfBars + (width / numOfBars) / 2,
+                    height - 10);
             } catch (ex) {}
         }
     }
