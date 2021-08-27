@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
+from time import localtime, mktime
 from multiprocessing import Process
 import memcache, sys, os
 
@@ -15,7 +16,7 @@ db = SQLAlchemy(app)
 class Peca(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     resultado = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    date_created = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
 
     def __repr__(self):
         return '<Task %r>' % self.id
@@ -49,7 +50,7 @@ def dashboard():
         if estado.date_created > (datetime.now() - timedelta(days=31)):
             estados.append({            
                 "nome": estado.nome,            
-                "data": estado.date_created
+                "data": estado.date_created.astimezone()
             })
         
     pecas = []
@@ -263,9 +264,11 @@ def modatividade():
     
     tempoAtivo = timedelta(seconds=int(porcentagem/100 * duracao * 60))
     
-    inicio     = Estado(nome='Inativo',  date_created=(datetime.now() - timedelta(minutes= duracao)))
-    fimAtivo   = Estado(nome="Ativo",    date_created=(datetime.now() - tempoAtivo))
-    fimInativo = Estado(nome="Invalido", date_created=datetime.now())
+    agora = datetime.fromtimestamp(mktime(localtime()))
+
+    inicio     = Estado(nome="Invalido", date_created = (agora - timedelta(minutes=duracao)))
+    fimAtivo   = Estado(nome="Inativo" , date_created = (agora - tempoAtivo))
+    fimInativo = Estado(nome="Ativo"   , date_created = agora)
     
     for estado in Estado.query.all():
         db.session.delete(estado)

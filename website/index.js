@@ -6,7 +6,6 @@ $(document).ready(function (){
         let login = $("#login")
         login.after("<span class=\"navbar_link\" id=\"logout\">Sair ("+sessionStorage.apelido +")</span>")
 	
-console.log(sessionStorage.apelido)
 	if (sessionStorage.cargo === "administrador"){
 		login.after("<span class=\"navbar_link\" id=\"configuracao\">Configurações</span>")		
 	}
@@ -85,7 +84,7 @@ function preencherDados(){
         const data = JSON.parse(req.responseText);
 
         preencherEstado(data.estado_atual);
-        preencherPizzaEstados(data.estados);
+        preencherPizzaEstados(data.estados, data.estado_atual);
 
         let pecasMes = new Map();
         for (const peca of data.pecas) {
@@ -136,7 +135,7 @@ function preencherEstado(estado){
     }
 }
 
-function preencherPizzaEstados(estados) {
+function preencherPizzaEstados(estados,estado_atual) {
     let canvas = document.getElementById("c_estados");
     let ctx = canvas.getContext('2d');
     canvas.height = window.innerHeight;
@@ -148,35 +147,31 @@ function preencherPizzaEstados(estados) {
     let ativo = 0, inativo = 0;
     let anterior = estados.shift();
     anterior.data = new Date(anterior.data);
-    estados.push({data: new Date(), nome:"Invalido"})
-    for (const estado of estados) {
-        estado.data = new Date(estado.data);
-        let delta = anterior.data - estado.data;
+    estados.push({data: new Date(), nome:estado_atual})
+    for (const atual of estados) {
+        let temp = atual.nome; 
+        if (!(temp === "Ativo" || temp === "Inativo"))
+            continue;
 
-        if(anterior.nome === "Ativo"){
+        atual.data = new Date(atual.data); 
+        let delta = atual.data - anterior.data ;
+
+        if(atual.nome === "Ativo"){
             ativo += delta;
         }
-        else if (anterior.nome === "Inativo"){
+        else if (atual.nome === "Inativo"){
             inativo += delta;
         }
-		else continue
-        anterior = estado;
+		else continue;
+        anterior = atual;
 
     }
-
-    let delta = anterior.data - new Date();
-    if(anterior.nome === "Ativo"){
-        ativo += delta;
-    }
-    else if (anterior.nome === "Inativo"){
-        inativo += delta;
-    }
-
+    
     const tot = ativo + inativo;
 
     ativo = ativo === 0 ? 0 : ativo/tot;
     inativo = inativo === 0 ? 0 : inativo/tot;
-
+    
     const dados = [ativo, inativo];
     {
         canvas.height = 300;

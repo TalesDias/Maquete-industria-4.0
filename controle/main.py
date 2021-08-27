@@ -246,8 +246,9 @@ def loop():
             continue
         
         
-        estado = Estados.Ativo
         atualizar_estado()
+        estado = Estados.Ativo
+        
         shared.set("Estado", estado.name)
         
         log_file("Entrou em modo:ATIVO")

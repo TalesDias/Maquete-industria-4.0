@@ -1,7 +1,6 @@
 import RPi.GPIO as GPIO
 from time import sleep
 import enum
-import braco
 
 GPIO.setmode(GPIO.BOARD)
 STEP = 16
@@ -21,9 +20,9 @@ GPIO.output(15, False)
 class Posicoes(enum.Enum):
     Inicial  = 0
     Led_A    = 29
-    Sensor_A = 76
+    Sensor_A = 78
     Led_B    = 125
-    Sensor_B = 173
+    Sensor_B = 177
 
 VELOCIDADE = 0.018
 PASSOS_POR_REV = 200
@@ -95,18 +94,3 @@ def anterior_kappa():
     girar(1, -1)
     kappa -= 1
     
-
-def rotina_teste():
-    for i in range(200):
-        braco.setup()
-        braco.executar(braco.Movimentos.Mesa)
-        setup()
-        girar_para(Posicoes.Led_A)
-        sleep(3)
-        girar_para(Posicoes.Sensor_A)
-        sleep(6)
-        girar_para(Posicoes.Led_B)
-        sleep(3)
-        girar_para(Posicoes.Sensor_B)
-        sleep(6)
-        girar_para(Posicoes.Inicial)
