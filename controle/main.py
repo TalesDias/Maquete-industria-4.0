@@ -282,6 +282,7 @@ def loop():
         conn.commit()
         
         pc_tot += 1 
+        atualizar_estado()
     
 setup()
 loop()
